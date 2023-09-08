@@ -1,4 +1,12 @@
 export interface IUserData {
-   email: string;
-   id: string;
+   nickname: string;
+   id: number;
+}
+
+export interface IUserDataWithAccessToken extends IUserData {
+   accessToken: string;
+}
+
+export interface IUserDataWithPassword extends IUserData {
+   password: string;
 }

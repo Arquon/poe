@@ -2,8 +2,9 @@ import { Container } from "@/components/ui/Container";
 import { ERoutes } from "@/router/router";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import userActions from "@/store/user/actions";
+import { unwrapResult } from "@reduxjs/toolkit";
 import React, { type FC } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface HeaderProps {}
 
@@ -12,31 +13,26 @@ export const Header: FC<HeaderProps> = () => {
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
 
-   const signOut = (): void => {
-      dispatch(userActions.signOut());
+   const logout = async (): Promise<void> => {
+      unwrapResult(await dispatch(userActions.logout()));
       navigate("/");
    };
-
-   if (!user) return <Navigate to={"/login"} />;
 
    return (
       <header>
          <Container>
             <div className="row py-5">
                <div className="col-4">
-                  <Link className="fs-5" to={ERoutes.landing}>
-                     Главная
-                  </Link>
+                  <Link to={ERoutes.landing}>Главная</Link>
                </div>
                <div className="col-4 text-center">
-                  <Link className="fs-5" to={ERoutes.harvest}>
-                     Жатва
-                  </Link>
+                  <Link to={ERoutes.harvest}>Жатва</Link>
                </div>
 
                <div className="col-4 text-end">
-                  <a className="fs-5" onClick={signOut}>
-                     {user.email}
+                  <span className="me-3 ">Logged as {user?.nickname}</span>
+                  <a role="button" onClick={logout}>
+                     Выйти
                   </a>
                </div>
             </div>

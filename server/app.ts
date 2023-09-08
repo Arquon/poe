@@ -1,31 +1,30 @@
+require("module-alias/register");
+
 import express from "express";
 import chalk from "chalk";
-import config from "./config/config.json";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
-const { PORT } = config;
+import config from "./config/config.json";
+import router from "./routes/routes";
+
+const { server_port } = config;
 
 console.log(process.env.NODE_ENV);
 
 const app = express();
 
-app.use(express.json());
 app.use(
-   express.urlencoded({
-      extended: false,
+   cors({
+      origin: ["http://localhost:8000"],
+      methods: ["GET", "OPTIONS", "POST", "PUT", "DELETE", "PATCH"],
+      credentials: true,
    })
 );
+app.use(express.json());
+app.use(cookieParser());
+app.use("/api", router);
 
-async function start() {
-   try {
-      app.listen(PORT, () => {
-         console.log(chalk.green(`Server started on port: ${PORT}`));
-      });
-   } catch (error) {
-      if (error instanceof Error) {
-         console.log(chalk.red(error.message));
-      }
-      process.exit(1);
-   }
-}
-
-start();
+app.listen(server_port, () => {
+   console.log(chalk.green(`Server started on port: ${server_port}`));
+});

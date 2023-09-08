@@ -5,21 +5,21 @@ import { HarvestRunAttemptItem } from "./HarvestRunAttemptItem";
 interface HarvestTableProps {}
 
 export const HarvestTable: FC<HarvestTableProps> = () => {
-   const { runs, prices } = useAppSelector((state) => state.harvest);
+   const { attempts } = useAppSelector((state) => state.harvest);
 
    return (
-      <div className="container">
+      <>
          <HarvestTableHeader />
 
-         {runs.map((attempt) => (
-            <HarvestRunAttemptItem key={attempt.id} attempt={attempt} prices={prices} />
+         {attempts.map((attempt) => (
+            <HarvestRunAttemptItem key={attempt.id} attempt={attempt} />
          ))}
-      </div>
+      </>
    );
 };
 
 const HarvestTableHeader: FC = () => (
-   <div className="row justify-content-center align-items-center g-2">
+   <div className="row justify-content-center align-items-center g-2 mb-5">
       <div className="col">Желтая жизненная сила</div>
       <div className="col">Синяя жизненная сила</div>
       <div className="col">Красная жизненная сила</div>

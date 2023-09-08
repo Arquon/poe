@@ -129,7 +129,7 @@ module.exports = {
             },
          },
          {
-            test: /\.[jt]s?/,
+            test: /\.[jt]s[x]?$/,
             loader: "ts-loader",
             options: {
                transpileOnly: isProd,

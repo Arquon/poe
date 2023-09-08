@@ -1,9 +1,17 @@
-import { IHarvestMapValues } from "./IHarvestMapValues";
+import { IHarvestMapLifeForceCount, IHarvestMapValues } from "./IHarvestMapValues";
+import { IHarvestPrices } from "./IHarvestPrices";
 
-export interface IHarvestRunAttempt {
+export interface IHarvestAttempt {
    maps: [IHarvestMapValues, IHarvestMapValues, IHarvestMapValues, IHarvestMapValues];
-   profit: number;
+   prices: IHarvestPrices;
+   id: number;
+   userId: number;
+   invitations: number;
+   note: string;
+}
+export interface IHarvestAttemptView {
+   total: IHarvestMapLifeForceCount;
+   prices: IHarvestPrices;
+   invitations: number;
    id: number;
 }
-
-export type IHarvestRunAttemptWithoutId = Omit<IHarvestRunAttempt, "id">;

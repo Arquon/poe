@@ -1,7 +1,9 @@
-import { MainLayout } from "@/layouts/MainLayout";
-import { type TBasicRoute, basicRoutes, landingRoutes } from "@/router/router";
-import React from "react";
+import { type TBasicRoute, routes } from "@/router/router";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import userActions from "@/store/user/actions";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 interface Props {}
 
@@ -19,13 +21,21 @@ function RenderRoutes(children: TBasicRoute[]): JSX.Element[] {
 }
 
 export const App: React.FC<Props> = () => {
+   const { isLoadingUser } = useAppSelector((state) => state.user);
+   const dispatch = useAppDispatch();
+
+   const fetchUserData = async (): Promise<void> => {
+      await dispatch(userActions.getCurrentUserData());
+   };
+
+   useEffect(() => {
+      fetchUserData();
+   }, []);
+
    return (
       <div className="wrapper">
-         <Routes>
-            {RenderRoutes(landingRoutes)}
-
-            <Route element={<MainLayout />}>{RenderRoutes(basicRoutes)}</Route>
-         </Routes>
+         {!isLoadingUser && <Routes>{RenderRoutes(routes)}</Routes>}
+         <ToastContainer />
       </div>
    );
 };

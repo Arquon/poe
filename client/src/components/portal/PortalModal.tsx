@@ -13,7 +13,7 @@ export const PortalModal: FC<PropsWithChildren> = ({ children }) => {
    return (
       <>
          {createPortal(
-            <div className="desk-modal" onClick={backgroundClickHandler}>
+            <div className="poe-modal" onClick={backgroundClickHandler}>
                {children}
             </div>,
             document.body

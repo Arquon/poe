@@ -1,7 +1,7 @@
 import { type IUserData } from "@@@/types/user/IUserData";
 import { type Nullable } from "@/types/default";
-import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { getCurrentUserData, login, register } from "./actions";
+import { createSlice } from "@reduxjs/toolkit";
+import { getCurrentUserData, login, logout, register } from "./actions";
 import { isUserAsyncThunkError } from "@/utils/asyncThunkErrorChecking";
 
 interface IUserState {
@@ -17,11 +17,7 @@ const initialState: IUserState = {
 const userSlice = createSlice({
    name: "user",
    initialState,
-   reducers: {
-      setUser: (state, action: PayloadAction<Nullable<IUserData>>) => {
-         state.user = action.payload;
-      },
-   },
+   reducers: {},
    extraReducers(builder) {
       builder
          .addCase(login.fulfilled, (state, action) => {
@@ -29,6 +25,9 @@ const userSlice = createSlice({
          })
          .addCase(register.fulfilled, (state, action) => {
             state.user = action.payload;
+         })
+         .addCase(logout.fulfilled, (state) => {
+            state.user = null;
          })
          .addCase(getCurrentUserData.pending, (state) => {
             state.isLoadingUser = true;

@@ -3,27 +3,21 @@ import { authService } from "@/services/auth.service";
 
 import { type Nullable } from "@/types/default";
 import { type ValidationErrors } from "@/types/validator/errorTypes";
-import { signInNetworkErrorsHandler, signUpNetworkErrorsHandler, userNetworkErrorsHandler } from "@/utils/networkErrorHandlers";
+import {
+   signInNetworkErrorsHandler,
+   signUpNetworkErrorsHandler,
+   defaultNetworkErrorsHandler as userNetworkErrorsHandler,
+} from "@/utils/networkErrorHandlers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { actions } from "./slice";
 import { type IAuthData } from "@@@/types/auth/IAuthData";
 import { type IUserData } from "@@@/types/user/IUserData";
-import { type AppActionType } from "../store";
-import { localStorageService } from "@/services/localStorage.service";
 
 const login = createAsyncThunk<IUserData, IAuthData, { rejectValue: string | ValidationErrors<IAuthData> }>(
    "user/login",
    async function (authData, { rejectWithValue }) {
       try {
-         const data = await authService.signIn(authData);
-         localStorageService.setCredentials(data);
-         try {
-            const userData = await authService.getUserData(data.localId);
-            return userData;
-         } catch (error) {
-            const parsedError = userNetworkErrorsHandler(error);
-            return rejectWithValue(parsedError);
-         }
+         const userData = await authService.signIn(authData);
+         return userData;
       } catch (error) {
          const parsedError = signInNetworkErrorsHandler(error);
          return rejectWithValue(parsedError);
@@ -35,9 +29,7 @@ const register = createAsyncThunk<IUserData, IAuthData, { rejectValue: string | 
    "user/register",
    async function (registrationData, { rejectWithValue }) {
       try {
-         const data = await authService.signUp(registrationData);
-         localStorageService.setCredentials(data);
-         const userData = await authService.createUser({ email: registrationData.email, id: data.localId }, data.localId);
+         const userData = await authService.signUp(registrationData);
          return userData;
       } catch (error) {
          const parsedError = signUpNetworkErrorsHandler(error);
@@ -50,9 +42,7 @@ const getCurrentUserData = createAsyncThunk<Nullable<IUserData>, undefined, { re
    "user/getCurrentUserData",
    async function (_, { rejectWithValue }) {
       try {
-         const { localId } = localStorageService.getCredentials();
-         if (!localId) return null;
-         const data = await authService.getUserData(localId);
+         const data = await authService.getCurrentUserData();
          return data;
       } catch (error) {
          const parsedError = userNetworkErrorsHandler(error);
@@ -61,17 +51,21 @@ const getCurrentUserData = createAsyncThunk<Nullable<IUserData>, undefined, { re
    }
 );
 
-const signOut = (): AppActionType => (dispatch, getState) => {
-   localStorageService.removeCredentials();
-   dispatch(actions.setUser(null));
-};
+const logout = createAsyncThunk<undefined, undefined, { rejectValue: string }>("user/logout", async function (_, { rejectWithValue }) {
+   try {
+      await authService.logout();
+   } catch (error) {
+      const parsedError = userNetworkErrorsHandler(error);
+      return rejectWithValue(parsedError);
+   }
+});
 
 const userActions = {
    login,
    register,
    getCurrentUserData,
-   signOut,
+   logout,
 };
 
-export { login, register, getCurrentUserData };
+export { login, register, getCurrentUserData, logout };
 export default userActions;

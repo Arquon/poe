@@ -1,6 +1,7 @@
 export interface IHarvestPrices {
-   yellowDivinePrice: number;
-   blueDivinePrice: number;
-   redDivinePrice: number;
-   memoryDivinePrice: number;
+   yellow: number;
+   blue: number;
+   red: number;
+   memory: number;
+   invitation: number;
 }

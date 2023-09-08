@@ -1,5 +1,74 @@
-.hello {
-  color: red;
-  font-size: 28px;
-  background-image: url("../images/telegram.svg");
+$color: #eccba9;
+$color-hovered: #fff;
+$modal-color: #000;
+$size: 20px;
+
+body {
+   background: #000 url("https://web.poecdn.com/protected/image/layout/ancestor-bg.jpg?v=1693392557730&key=EZnPlsvdgPo5qWE6ZraQGg") no-repeat top
+      center fixed;
+   background-size: cover;
+   color: $color;
+   font-size: $size;
+
+   &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      backdrop-filter: blur(1px) opacity(0.4) saturate(1.8);
+      z-index: -1;
+   }
+}
+
+a {
+   color: $color;
+   text-decoration: none;
+   cursor: pointer;
+
+   &:hover {
+      color: $color-hovered;
+   }
+}
+
+.landing {
+   height: 100vh;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.poe-modal {
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   background-color: rgba(0, 0, 0, 0.4);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: $modal-color;
+}
+
+.modal-login {
+   flex: 0 1 600px;
+   margin: 0 20px;
+}
+
+.modal-medium {
+   flex: 0 1 1000px;
+   margin: 0 20px;
+}
+
+.modal-wrap {
+   max-height: 80vh;
+   overflow: auto;
+}
+
+.harvest-map {
+   padding-bottom: 20px;
+   border-bottom: 2px solid $color;
+   margin-bottom: 20px;
 }

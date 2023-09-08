@@ -1,5 +1,6 @@
+import { MainLayout } from "@/layouts/MainLayout";
 import { HarvestAttemptPage } from "@/pages/HarvestAttemptPage";
-import { HarvestPage } from "@/pages/HarvestPage";
+import { HarvestPageAuth } from "@/pages/HarvestPage";
 import { Landing } from "@/pages/Landing";
 import { LoginPage } from "@/pages/LoginPage";
 import { type FC } from "react";
@@ -14,6 +15,7 @@ export enum ERoutes {
 interface IRoute {
    name: string;
    Element: FC;
+   children?: TBasicRoute[];
 }
 
 interface IBasicIndexedRoute extends IRoute {
@@ -23,19 +25,36 @@ interface IBasicIndexedRoute extends IRoute {
 
 interface IBasicNonIndexedRoute extends IRoute {
    index?: never;
-   path: string;
+   path?: ERoutes;
 }
 
-interface IBasicNonIndexedRoute extends IRoute {
+interface IBasicRouteWithChildrenOnly extends IRoute {
+   children: TBasicRoute[];
+   path?: never;
    index?: never;
-   path: string;
 }
 
-export type TBasicRoute = (IBasicIndexedRoute | IBasicNonIndexedRoute) & {
-   children?: TBasicRoute[];
-};
+export type TBasicRoute = IBasicIndexedRoute | IBasicNonIndexedRoute | IBasicRouteWithChildrenOnly;
 
-const landingRoutes: TBasicRoute[] = [
+const routes: TBasicRoute[] = [
+   {
+      name: "mainLayout",
+      Element: MainLayout,
+      children: [
+         {
+            name: "harvest",
+            path: ERoutes.harvest,
+            Element: HarvestPageAuth,
+            children: [
+               {
+                  name: "harvestAttempt",
+                  Element: HarvestAttemptPage,
+                  path: ERoutes.harvestAttempt,
+               },
+            ],
+         },
+      ],
+   },
    {
       name: "landing",
       path: ERoutes.landing,
@@ -50,19 +69,4 @@ const landingRoutes: TBasicRoute[] = [
    },
 ];
 
-const basicRoutes: TBasicRoute[] = [
-   {
-      name: "harvest",
-      path: ERoutes.harvest,
-      Element: HarvestPage,
-      children: [
-         {
-            name: "harvestAttempt",
-            Element: HarvestAttemptPage,
-            path: ERoutes.harvestAttempt,
-         },
-      ],
-   },
-];
-
-export { landingRoutes, basicRoutes };
+export { routes };

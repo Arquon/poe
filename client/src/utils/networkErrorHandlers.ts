@@ -11,10 +11,30 @@ interface NetworkErrors {
    _404: {
       default: string;
    };
+   _400: {
+      default: string;
+   };
    unhandled: string;
 }
 
-function networkErrorsHandler(error: unknown, defaultErrorMessages: NetworkErrors, customErrorMessages?: DeepPartial<NetworkErrors>): string {
+const defaultNetworkErrorsMessages: NetworkErrors = {
+   _401: {
+      default: "Непредвиденная ошибка 401",
+   },
+   _404: {
+      default: "Непредвиденная ошибка 404",
+   },
+   _400: {
+      default: "Непредвиденная ошибка 400",
+   },
+   unhandled: "Unhandled Axios Error",
+};
+
+export function defaultNetworkErrorsHandler(
+   error: unknown,
+   defaultErrorMessages: NetworkErrors = defaultNetworkErrorsMessages,
+   customErrorMessages?: DeepPartial<NetworkErrors>
+): string {
    if (axios.isAxiosError(error)) {
       if (!error.response) return "Axios Error";
       const { statusText, status: code } = error.response;
@@ -30,7 +50,7 @@ function networkErrorsHandler(error: unknown, defaultErrorMessages: NetworkError
                return customErrorMessages?._404?.default ?? defaultErrorMessages._404.default;
          }
       }
-      console.error(error);
+
       return customErrorMessages?.unhandled ?? defaultErrorMessages.unhandled;
    }
 
@@ -38,27 +58,58 @@ function networkErrorsHandler(error: unknown, defaultErrorMessages: NetworkError
       return error;
    }
 
-   console.error(error);
    return "Unhandled Error";
 }
 
-const defaultNetworkErrorsMessages: NetworkErrors = {
+interface HarvestErrors extends NetworkErrors {
+   _400: NetworkErrors["_400"] & {
+      userNotFound: string;
+   };
+   _404: NetworkErrors["_404"] & {
+      attemptNotFound: string;
+   };
+}
+
+const defaultHarvestErrorMessages: HarvestErrors = {
    _401: {
-      default: "Непредвиденная ошибка 401",
+      default: "Непредвиденная ошибка 401 Жатва",
+   },
+   _400: {
+      userNotFound: "Пользователь не найден",
+      default: "Непредвиденная ошибка 400 Жатва",
    },
    _404: {
-      default: "Непредвиденная ошибка 404",
+      attemptNotFound: "Попытка не найдена или не принадлежит вам",
+      default: "Непредвиденная ошибка 404 Жатва",
    },
    unhandled: "Unhandled Axios Error",
 };
 
-function netWorkErrorsHandlerGenerator(defaultNetworkErrors: NetworkErrors = defaultNetworkErrorsMessages) {
-   return function (error: unknown, customErrorMessages?: DeepPartial<NetworkErrors>) {
-      return networkErrorsHandler(error, defaultNetworkErrors, customErrorMessages);
-   };
-}
+export function harvestNetworkErrorsHandler(error: unknown, customErrorMessages?: DeepPartial<HarvestErrors>): string {
+   if (axios.isAxiosError(error)) {
+      if (!error.response) return "Axios Error";
+      const { statusText, status: code } = error.response;
+      if (code === 400) {
+         switch (statusText) {
+            default:
+               return customErrorMessages?._401?.default ?? defaultHarvestErrorMessages._401.default;
+         }
+      }
+      if (code === 404) {
+         switch (statusText) {
+            default:
+               return customErrorMessages?._404?.default ?? defaultHarvestErrorMessages._404.default;
+         }
+      }
+      return customErrorMessages?.unhandled ?? defaultHarvestErrorMessages.unhandled;
+   }
 
-export const userNetworkErrorsHandler = netWorkErrorsHandlerGenerator();
+   if (isString(error)) {
+      return error;
+   }
+
+   return "Unhandled Error";
+}
 
 export function signInNetworkErrorsHandler(error: unknown): ValidationErrors<IAuthData> | string {
    if (axios.isAxiosError(error)) {
@@ -67,11 +118,11 @@ export function signInNetworkErrorsHandler(error: unknown): ValidationErrors<IAu
       const errorObject: ValidationErrors<IAuthData> = {};
       if (code === 400) {
          switch (message) {
-            case "INVALID_EMAIL":
-               errorObject.email = "Введен некорректный email";
+            case "INVALID_NICKNAME":
+               errorObject.nickname = "Введен некорректный nickname";
                return errorObject;
-            case "EMAIL_NOT_FOUND":
-               errorObject.email = "Пользователь с указанным email не зарегистрирован";
+            case "USER_NOT_FOUND":
+               errorObject.nickname = "Пользователь с указанным email не зарегистрирован";
                return errorObject;
             case "INVALID_PASSWORD":
                errorObject.password = "Введен неверный пароль";
@@ -89,15 +140,16 @@ export function signInNetworkErrorsHandler(error: unknown): ValidationErrors<IAu
 export function signUpNetworkErrorsHandler(error: unknown): ValidationErrors<IAuthData> | string {
    if (axios.isAxiosError(error)) {
       if (!error.response) throw new Error("Axios Error");
-      const { code, message }: { code: number; message: string } = error.response.data.error;
+      const { status, data } = error.response;
+      const { message } = data;
       const errorObject: ValidationErrors<IAuthData> = {};
-      if (code === 400) {
+      if (status === 400) {
          switch (message) {
-            case "INVALID_EMAIL":
-               errorObject.email = "Введен некорректный email";
+            case "INVALID_NICKNAME":
+               errorObject.nickname = "Введен некорректный nickname";
                return errorObject;
-            case "EMAIL_EXISTS":
-               errorObject.email = "Пользователь с указанным email уже зарегистрирован";
+            case "USER_EXISTS":
+               errorObject.nickname = "Пользователь с указанным nickname уже зарегистрирован";
                return errorObject;
             default:
                return "Непредвиденная ошибка";

@@ -18,5 +18,7 @@ module.exports = {
       "@typescript-eslint/no-empty-interface": "off",
       "@typescript-eslint/strict-boolean-expressions": "off",
       "no-empty-pattern": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-floating-promises": "off",
    },
 };

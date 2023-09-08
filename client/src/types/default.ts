@@ -15,3 +15,9 @@ export type TimeStamp = number;
 export type PropsWithChildrenWithClassName<T = unknown> = PropsWithChildren<T> & {
    className?: string;
 };
+
+export type Entries<T> = Array<
+   {
+      [K in keyof T]: [K, T[K]];
+   }[keyof T]
+>;

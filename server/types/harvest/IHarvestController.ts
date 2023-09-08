@@ -1,7 +1,7 @@
 import { IHarvestPrices } from "@@@/types/harvest/IHarvestPrices";
-import { IHarvestRunAttemptWithoutId, IHarvestRunAttempt } from "@@@/types/harvest/IHarvestRunAttempt";
+import { IHarvestRunAttemptNew, IHarvestRunAttempt } from "@@@/types/harvest/IHarvestRunAttempt";
 
 export interface ILifeForceStorage {
-   addAttempt: (attempt: IHarvestRunAttemptWithoutId, lastPrices: IHarvestPrices) => Promise<void>;
+   addAttempt: (attempt: IHarvestRunAttemptNew, lastPrices: IHarvestPrices) => Promise<void>;
    getAttempts: () => Promise<IHarvestRunAttempt[]>;
 }
