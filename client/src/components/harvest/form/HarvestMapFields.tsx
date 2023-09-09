@@ -1,15 +1,19 @@
-import React, { useEffect, type FC, useState } from "react";
-import { TextNumericField } from "../ui/form/TextField";
-import { type ChangeHandlerFN } from "@/hooks/useForm";
-import { type IHarvestMapLifeForceCount, type IHarvestMapValues } from "@@@/types/harvest/IHarvestMapValues";
-import { validateHarvestMap } from "@/utils/validator/validateFormFunctions";
+import React, { type FC } from "react";
+import { TextNumericField } from "../../ui/form/TextField";
+import {
+   type IHarvestMapValuesWithoutId,
+   type IHarvestMapLifeForceCount,
+   type IHarvestMapValues,
+} from "@@@/types/harvest/IHarvestMapValues";
+import { type FormValidationErrors } from "@/types/validator/errorTypes";
 
 interface HarvestMapFieldsProps {
    map: IHarvestMapValues;
-   mapChangeHandler: (changeMap: ChangeHandlerFN<IHarvestMapValues>) => void;
-   mapSetError: (error: boolean) => void;
-   readOnly?: boolean;
+   placeHolderMap?: IHarvestMapValuesWithoutId;
+   setMapValues: (map: Partial<IHarvestMapValues>) => void;
+   readonly?: boolean;
    heading: string;
+   errors?: FormValidationErrors<IHarvestMapValues>;
 }
 
 export interface IHarvestMapErrors {
@@ -19,47 +23,36 @@ export interface IHarvestMapErrors {
    quantity: boolean;
 }
 
-const defaultMapLocalErrors: IHarvestMapErrors = {
-   yellow: true,
-   blue: true,
-   red: true,
-   quantity: true,
-};
-
-export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({ map, mapChangeHandler, mapSetError, readOnly, heading }) => {
-   const [mapLocalErrors, setMapLocalErrors] = useState(defaultMapLocalErrors);
-
+export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
+   map,
+   placeHolderMap,
+   readonly: readOnly,
+   heading,
+   errors,
+   setMapValues,
+}) => {
    const { result, quantity } = map;
    const { yellow, blue, red } = result;
 
+   const yellowError = errors?.result.yellow;
+   const blueError = errors?.result.blue;
+   const redError = errors?.result.red;
+   const quantityError = errors?.quantity;
+
    const lifeForceChangeHandler = (lifeForce: Partial<IHarvestMapLifeForceCount>): void => {
-      mapChangeHandler((prevMap) => ({
-         ...prevMap,
+      setMapValues({
          result: {
-            ...prevMap.result,
+            ...result,
             ...lifeForce,
          },
-      }));
+      });
    };
 
    const quantityChangeHandler = (quantity: number): void => {
-      mapChangeHandler((prevMap) => ({
-         ...prevMap,
+      setMapValues({
          quantity,
-      }));
+      });
    };
-
-   const mapSetLocalErrors = (errors: Partial<IHarvestMapErrors>): void => {
-      setMapLocalErrors((prevErrors) => ({
-         ...prevErrors,
-         ...errors,
-      }));
-   };
-
-   useEffect(() => {
-      const isError = validateHarvestMap(map);
-      mapSetError(isError);
-   }, [map]);
 
    return (
       <div className="row harvest-map">
@@ -69,10 +62,10 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({ map, mapChangeHand
                <TextNumericField
                   onChange={(yellow) => {
                      lifeForceChangeHandler({ yellow });
-                     mapSetLocalErrors({ yellow: !yellow });
                   }}
                   value={yellow || ""}
-                  error={mapLocalErrors.yellow}
+                  placeholder={placeHolderMap ? Math.round(placeHolderMap.result.yellow) : undefined}
+                  error={yellowError}
                   readOnly={readOnly}
                />
             </div>
@@ -80,10 +73,10 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({ map, mapChangeHand
                <TextNumericField
                   onChange={(blue) => {
                      lifeForceChangeHandler({ blue });
-                     mapSetLocalErrors({ blue: !blue });
                   }}
                   value={blue || ""}
-                  error={mapLocalErrors.blue}
+                  placeholder={placeHolderMap ? Math.round(placeHolderMap.result.blue) : undefined}
+                  error={blueError}
                   readOnly={readOnly}
                />
             </div>
@@ -91,10 +84,10 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({ map, mapChangeHand
                <TextNumericField
                   onChange={(red) => {
                      lifeForceChangeHandler({ red });
-                     mapSetLocalErrors({ red: !red });
                   }}
                   value={red || ""}
-                  error={mapLocalErrors.red}
+                  placeholder={placeHolderMap ? Math.round(placeHolderMap.result.red) : undefined}
+                  error={redError}
                   readOnly={readOnly}
                />
             </div>
@@ -102,10 +95,10 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({ map, mapChangeHand
                <TextNumericField
                   onChange={(quantity) => {
                      quantityChangeHandler(quantity);
-                     mapSetLocalErrors({ quantity: !quantity });
                   }}
+                  placeholder={placeHolderMap ? Math.round(placeHolderMap.quantity) : undefined}
                   value={quantity || ""}
-                  error={mapLocalErrors.quantity}
+                  error={quantityError}
                   readOnly={readOnly}
                />
             </div>

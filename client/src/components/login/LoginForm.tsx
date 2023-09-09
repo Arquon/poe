@@ -52,24 +52,26 @@ export const LoginForm: FC<LoginFormProps> = ({}) => {
 
    return (
       <form onSubmit={onSubmitHandler}>
-         <TextField
-            label="Nickname"
-            value={data.nickname}
-            onChange={(nickname) => {
-               onChangeHandler({ nickname });
-            }}
-            error={errors.nickname ?? networkErrors.nickname}
-         />
-         <TextField
-            label="Пароль"
-            type="password"
-            value={data.password}
-            onChange={(password) => {
-               onChangeHandler({ password });
-            }}
-            error={errors.password ?? networkErrors.password}
-         />
-         <Button disabled={isError} className="btn-success">
+         <div className="mb-3">
+            <TextField
+               label="Nickname"
+               value={data.nickname}
+               onChange={(nickname) => {
+                  onChangeHandler({ nickname });
+               }}
+               error={errors.nickname ?? networkErrors.nickname}
+            />
+            <TextField
+               label="Пароль"
+               type="password"
+               value={data.password}
+               onChange={(password) => {
+                  onChangeHandler({ password });
+               }}
+               error={errors.password ?? networkErrors.password}
+            />
+         </div>
+         <Button disabled={isError} className="btn-success w-100">
             Войти
          </Button>
       </form>

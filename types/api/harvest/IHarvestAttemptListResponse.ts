@@ -1,5 +1,5 @@
-import { IHarvestAttemptView } from "../../harvest/IHarvestRunAttempt";
+import { IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestRunAttempt";
 
 export interface IHarvestAttemptListResponse {
-   attempts: IHarvestAttemptView[];
+   attemptsInfo: IHarvestAttemptViewInfo;
 }

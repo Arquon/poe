@@ -1,16 +1,17 @@
-import { IHarvestStorage } from "@/types/storage/IHarvestStorage";
-import { IHarvestAttemptView, IHarvestAttempt } from "@@@/types/harvest/IHarvestRunAttempt";
+import { IGetAttemptsInfo, IHarvestStorage } from "@/types/storage/IHarvestStorage";
+import { IHarvestAttemptView, IHarvestAttempt, IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
 
 import db from "@/db";
-import { type THarvestAttemptsMaps } from "@@@/types/harvest/IHarvestMapValues";
 import { IHarvestPrices } from "@@@/types/harvest/IHarvestPrices";
 import { IHarvestAttemptNew } from "@@@/types/api/harvest/IHarvestAttemptRequest";
 import { Nullable } from "@/types/default";
+import { IHarvestMapValues } from "@@@/types/harvest/IHarvestMapValues";
 
 const INSERT_INTO_HARVEST_QUERY = "SELECT * FROM add_harvest_attempt($1, $2, $3, $4, $5)";
 
-const GET_HARVEST_ATTEMPTS_FOR_USER_QUERY = "SELECT * FROM get_harvest_views_attempts_for_user($1)";
+const GET_HARVEST_ATTEMPTS_FOR_USER_QUERY = "SELECT * FROM get_harvest_views_attempts_for_user($1, $2, $3)";
 const GET_SINGLE_HARVEST_ATTEMPT_QUERY = "SELECT * FROM get_harvest_full_attempt($1)";
+const GET_ALL_HARVEST_ATTEMPTS_QUERY = "SELECT * FROM get_all_harvest_attempts($1)";
 
 const UPDATE_HARVEST_ATTEMPT_QUERY = "SELECT * FROM update_harvest_attempt($1, $2, $3, $4, $5)";
 const DELETE_HARVEST_ATTEMPT_QUERY = "SELECT * FROM delete_harvest_attempt($1)";
@@ -20,7 +21,7 @@ const CHECK_FOR_USER_HAVE_ATTEMPT = "SELECT * FROM check_for_user_have_attempt($
 interface IHarvestAttemptDB {
    id: number;
    user_id: number;
-   maps: THarvestAttemptsMaps;
+   maps: IHarvestMapValues[];
    prices: IHarvestPrices;
    invitations: number;
    note: string;
@@ -47,14 +48,21 @@ export class HarvestStorageDb implements IHarvestStorage {
       return constructAttempt(newAttempt);
    }
 
-   async getAttemptsForUser(userId: number): Promise<IHarvestAttemptView[]> {
-      const view = (await db.query<IHarvestAttemptView>(GET_HARVEST_ATTEMPTS_FOR_USER_QUERY, [userId])).rows;
-      return view;
+   async getAttemptsForUser(userId: number, info: IGetAttemptsInfo): Promise<IHarvestAttemptViewInfo> {
+      const view = (await db.query<IHarvestAttemptViewInfo>(GET_HARVEST_ATTEMPTS_FOR_USER_QUERY, [userId, info.count, info.page])).rows[0];
+      return { attempts: view.attempts ?? [], total: view.total };
    }
 
    async getSingleAttempt(id: number): Promise<Nullable<IHarvestAttempt>> {
       const attemptFromDb = (await db.query<IHarvestAttemptDB>(GET_SINGLE_HARVEST_ATTEMPT_QUERY, [id])).rows[0];
+      if (attemptFromDb.id === null) return null;
       return constructAttempt(attemptFromDb);
+   }
+
+   async getAllAttempts(): Promise<IHarvestAttempt[]> {
+      const attemptsFromDb = (await db.query<IHarvestAttemptDB>(GET_ALL_HARVEST_ATTEMPTS_QUERY, [50])).rows;
+      const attempts = attemptsFromDb.map((attemptFromDb) => constructAttempt(attemptFromDb));
+      return attempts;
    }
 
    async updateAttempt(attempt: IHarvestAttempt): Promise<Nullable<IHarvestAttempt>> {

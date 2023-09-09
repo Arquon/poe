@@ -20,5 +20,7 @@ module.exports = {
       "no-empty-pattern": "off",
       "@typescript-eslint/no-misused-promises": "off",
       "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-extraneous-class": "off",
+      "@typescript-eslint/no-throw-literal": "off",
    },
 };

@@ -8,7 +8,7 @@ import { type FC } from "react";
 export enum ERoutes {
    landing = "/",
    harvest = "/harvest",
-   harvestAttempt = "/harvest/:harvestAttemptId",
+   harvestAttempt = "/harvest/:id",
    login = "/login",
 }
 

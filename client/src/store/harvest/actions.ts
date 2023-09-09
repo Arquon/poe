@@ -1,10 +1,11 @@
 import { harvestService } from "@/services/harvest.service";
 import { harvestNetworkErrorsHandler } from "@/utils/networkErrorHandlers";
 import {
-   type IHarvestAttemptNewRequest as IHarvestAttemptNewForm,
-   type IHarvestAttemptRequest as IHarvestAttemptUpdateForm,
+   type IHarvestAttemptCreateRequest as IHarvestAttemptNewForm,
+   type IHarvestAttemptUpdateRequest as IHarvestAttemptUpdateForm,
 } from "@@@/types/api/harvest/IHarvestAttemptRequest";
-import { type IHarvestAttemptView, type IHarvestAttempt } from "@@@/types/harvest/IHarvestRunAttempt";
+import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
+import { type IHarvestAttempt, type IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const addAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptNewForm, { rejectValue: string }>(
@@ -20,11 +21,11 @@ const addAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptNewForm, { r
    }
 );
 
-const getAttempts = createAsyncThunk<IHarvestAttemptView[], undefined, { rejectValue: string }>(
+const getAttempts = createAsyncThunk<IHarvestAttemptViewInfo, number, { rejectValue: string }>(
    "harvest/getAll",
-   async function (_, { rejectWithValue }) {
+   async function (page, { rejectWithValue }) {
       try {
-         const attempts = await harvestService.getUserAttempts();
+         const attempts = await harvestService.getUserAttempts(page);
          return attempts;
       } catch (error) {
          const parsedError = harvestNetworkErrorsHandler(error);
@@ -39,6 +40,21 @@ const getSingleAttempt = createAsyncThunk<IHarvestAttempt, number, { rejectValue
       try {
          const attempt = await harvestService.getSingleAttempt(attemptId);
          return attempt;
+      } catch (error) {
+         const parsedError = harvestNetworkErrorsHandler(error, {
+            _404: { attemptNotFound: "Попытка не найдена" },
+         });
+         return rejectWithValue(parsedError);
+      }
+   }
+);
+
+const getAverageAttempts = createAsyncThunk<IHarvestAverageAttemptsObj, undefined, { rejectValue: string }>(
+   "harvest/getAverages",
+   async function (_, { rejectWithValue }) {
+      try {
+         const attempts = await harvestService.getAverageAttempts();
+         return attempts;
       } catch (error) {
          const parsedError = harvestNetworkErrorsHandler(error);
          return rejectWithValue(parsedError);
@@ -59,23 +75,27 @@ const updateAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptUpdateFor
    }
 );
 
-const deleteAttempt = createAsyncThunk<number, number, { rejectValue: string }>("harvest/delete", async function (attemptId, { rejectWithValue }) {
-   try {
-      const id = await harvestService.deleteAttempt(attemptId);
-      return id;
-   } catch (error) {
-      const parsedError = harvestNetworkErrorsHandler(error);
-      return rejectWithValue(parsedError);
+const deleteAttempt = createAsyncThunk<number, number, { rejectValue: string }>(
+   "harvest/delete",
+   async function (attemptId, { rejectWithValue, dispatch }) {
+      try {
+         const id = await harvestService.deleteAttempt(attemptId);
+         return id;
+      } catch (error) {
+         const parsedError = harvestNetworkErrorsHandler(error);
+         return rejectWithValue(parsedError);
+      }
    }
-});
+);
 
-const harvestActions = {
+const harvestAsyncActions = {
    addAttempt,
    getSingleAttempt,
    getAttempts,
+   getAverageAttempts,
    updateAttempt,
    deleteAttempt,
 };
 
-export { addAttempt, getSingleAttempt, getAttempts, updateAttempt, deleteAttempt };
-export default harvestActions;
+export { addAttempt, getSingleAttempt, getAttempts, updateAttempt, deleteAttempt, getAverageAttempts };
+export default harvestAsyncActions;

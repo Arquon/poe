@@ -1,6 +1,5 @@
 import { isObjectWithLength, isString } from "@/utils/typeChecking";
 import { emailRegex, isCapitalSymbolRegex, isDigitSymbolRegex, latinaAndNumericRegex } from "@/utils/regex";
-import { type PartialRecord } from "@/types/default";
 import {
    isRequiredMethod,
    isLatinaAndNumericMethod,
@@ -13,13 +12,14 @@ import {
 } from "./methodChecking";
 import { type IValidationMethods } from "@/types/validator/methodTypes";
 import { type ValidationErrors } from "@/types/validator/errorTypes";
+import { type PartialRecord } from "@/types/default";
 
 export type TValidator<T> = PartialRecord<keyof T, Partial<IValidationMethods<T>>>;
 
-function validator<T>(data: T, validatorConfig: TValidator<T>): ValidationErrors<T> {
+function validator<T, K extends keyof T>(data: T, validatorConfig: TValidator<T>): ValidationErrors<T> {
    const errors: ValidationErrors<T> = {};
 
-   for (const key of Object.keys(validatorConfig) as Array<keyof T>) {
+   for (const key of Object.keys(validatorConfig) as K[]) {
       const validationMethods = validatorConfig[key];
       if (validationMethods === undefined) continue;
       const error = validate(data[key], validationMethods, data);

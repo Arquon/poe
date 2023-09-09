@@ -8,7 +8,8 @@ const harvestRouter = Router();
 
 harvestRouter.post("/", ...asyncHandlerMap([authMiddleWare, harvestController.createAttempt]));
 harvestRouter.get("/", ...asyncHandlerMap([authMiddleWare, harvestController.getAttempts]));
-harvestRouter.get("/:id", ...asyncHandlerMap([authMiddleWare, harvestController.getSingleAttempt]));
+harvestRouter.get("/average", ...asyncHandlerMap([authMiddleWare, harvestController.getAverageAttempts]));
+harvestRouter.get("/attempt/:id", ...asyncHandlerMap([authMiddleWare, harvestController.getSingleAttempt]));
 harvestRouter.put("/", ...asyncHandlerMap([authMiddleWare, harvestController.updateAttempt]));
 harvestRouter.delete("/:id", ...asyncHandlerMap([authMiddleWare, harvestController.deleteAttempt]));
 

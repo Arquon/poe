@@ -56,6 +56,4 @@ export interface IValidationMethods<T>
       IsCapitalSymbolMethod,
       IsDigitSymbolMethod,
       EmailMethod,
-      SameAsMethod<T> {
-   isValidator?: never;
-}
+      SameAsMethod<T> {}

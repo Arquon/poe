@@ -1,5 +1,5 @@
 import { type ICommonTextInputProps } from "@/types/ui/ICommonInputProps";
-import { getClassNameFromArray } from "@/utils/functions";
+import { getClassNameFromArray } from "@/utils/functions/functions";
 import React, { useRef, type FC, type ChangeEvent, type ComponentProps } from "react";
 
 interface TextAreaFieldOwnProps extends ICommonTextInputProps {}

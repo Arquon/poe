@@ -1,5 +1,5 @@
-import { IHarvestAttempt } from "../../harvest/IHarvestRunAttempt";
+import { IHarvestAttempt } from "../../harvest/IHarvestAttempt";
 
-export type IHarvestAttemptNewRequest = Omit<IHarvestAttempt, "id" | "userId">;
+export type IHarvestAttemptCreateRequest = Omit<IHarvestAttempt, "id" | "userId">;
 export type IHarvestAttemptNew = Omit<IHarvestAttempt, "id">;
-export type IHarvestAttemptRequest = Omit<IHarvestAttempt, "userId">;
+export type IHarvestAttemptUpdateRequest = Omit<IHarvestAttempt, "userId">;

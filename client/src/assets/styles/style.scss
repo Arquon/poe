@@ -3,9 +3,26 @@ $color-hovered: #fff;
 $modal-color: #000;
 $size: 20px;
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+   -moz-appearance: textfield;
+}
+
+:root {
+   --toastify-color-success: #eccba9;
+   --toastify-color-error: #bf616a;
+}
+
 body {
-   background: #000 url("https://web.poecdn.com/protected/image/layout/ancestor-bg.jpg?v=1693392557730&key=EZnPlsvdgPo5qWE6ZraQGg") no-repeat top
-      center fixed;
+   background: #000
+      url("https://web.poecdn.com/protected/image/layout/ancestor-bg.jpg?v=1693392557730&key=EZnPlsvdgPo5qWE6ZraQGg")
+      no-repeat top center fixed;
    background-size: cover;
    color: $color;
    font-size: $size;
@@ -71,4 +88,75 @@ a {
    padding-bottom: 20px;
    border-bottom: 2px solid $color;
    margin-bottom: 20px;
+}
+
+.harvest-table {
+   background: transparent;
+   backdrop-filter: blur(10px) brightness(1.5);
+   border-radius: 15px;
+   padding: 24px;
+}
+
+.harvest-table-body {
+   background: transparent;
+   backdrop-filter: blur(10px) brightness(1.5);
+   border-radius: 15px;
+   padding: 24px 58px 24px 24px;
+}
+
+.harvest-item {
+   border-bottom: 1px solid $color;
+   position: relative;
+
+   &:first-child {
+      .harvest-item-link {
+         border-top-left-radius: 5px;
+         border-top-right-radius: 5px;
+      }
+   }
+
+   &:last-child {
+      border-bottom: none;
+
+      .harvest-item-link {
+         border-bottom-left-radius: 5px;
+         border-bottom-right-radius: 5px;
+      }
+   }
+}
+
+.harvest-item-link {
+   transition: 0.3s ease;
+
+   &:hover {
+      color: inherit;
+      backdrop-filter: brightness(1.5);
+   }
+}
+
+.harvest-delete-btn {
+   position: absolute;
+   top: 50%;
+   right: 0;
+   transform: translate(calc(100% + 11px), -50%);
+}
+
+.btn-delete {
+   font-size: 25px;
+   line-height: 15px;
+   width: 35px;
+   height: 35px;
+   display: flex;
+   justify-content: center;
+}
+
+.view-block {
+   span {
+      font-size: 16px;
+      color: gray;
+   }
+
+   p {
+      margin: 0px 0px 0px 0px;
+   }
 }

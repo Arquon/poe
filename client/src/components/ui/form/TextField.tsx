@@ -1,5 +1,6 @@
 import { type ICommonTextInputProps } from "@/types/ui/ICommonInputProps";
-import { getClassNameFromArray } from "@/utils/functions";
+import { getClassNameFromArray } from "@/utils/functions/functions";
+import { floatRegex, intRegex } from "@/utils/regex";
 import React, { useRef, type FC, type ChangeEvent, type ComponentProps } from "react";
 
 interface TextFieldOwnProps extends ICommonTextInputProps {
@@ -9,7 +10,16 @@ interface TextFieldOwnProps extends ICommonTextInputProps {
 
 type TextFieldProps = TextFieldOwnProps & Omit<ComponentProps<"input">, keyof TextFieldOwnProps>;
 
-export const TextField: FC<TextFieldProps> = ({ value, type = "text", label, error, onChange, blockClassName, ...otherProps }) => {
+export const TextField: FC<TextFieldProps> = ({
+   value,
+   type = "text",
+   label,
+   error,
+   onChange,
+   blockClassName,
+   readOnly,
+   ...otherProps
+}) => {
    const inputRef = useRef<HTMLInputElement>(null);
 
    const onClickLabelHandler = (): void => {
@@ -23,7 +33,7 @@ export const TextField: FC<TextFieldProps> = ({ value, type = "text", label, err
 
    const inputClassName = ["form-control"];
 
-   if (error) {
+   if (error && !readOnly) {
       inputClassName.push("is-invalid");
    }
 
@@ -47,21 +57,32 @@ export const TextField: FC<TextFieldProps> = ({ value, type = "text", label, err
                {...otherProps}
             />
 
-            {isErrorString && <div className="invalid-feedback">{error}</div>}
+            {isErrorString && !readOnly && <div className="invalid-feedback">{error}</div>}
          </div>
       </div>
    );
 };
 
-type TextNumberFieldProps = Omit<TextFieldProps, "onChange" | "value"> & {
+interface TextNumberFieldProps extends Omit<TextFieldProps, "onChange" | "value" | "placeholder"> {
    onChange: (value: number) => void;
    value: number | string;
-};
+   float?: boolean;
+   placeholder?: number;
+}
 
-export const TextNumericField: FC<TextNumberFieldProps> = ({ onChange, value, ...otherProps }) => {
+export const TextNumericField: FC<TextNumberFieldProps> = ({ onChange, value, float, placeholder, ...otherProps }) => {
+   const regex = float ? floatRegex : intRegex;
+
    const onChangeHandler = (value: string): void => {
-      onChange(+value);
+      if (regex.test(value)) onChange(+value);
    };
 
-   return <TextField onChange={onChangeHandler} value={String(value)} {...otherProps} />;
+   return (
+      <TextField
+         onChange={onChangeHandler}
+         value={String(value)}
+         placeholder={placeholder ? String(placeholder) : undefined}
+         {...otherProps}
+      />
+   );
 };

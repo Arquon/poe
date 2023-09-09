@@ -8,8 +8,7 @@ export interface IHarvestMapValues {
    result: IHarvestMapLifeForceCount;
    quantity: number;
    order: number;
+   id: string;
 }
 
-export type THarvestAttemptsMaps = [IHarvestMapValues, IHarvestMapValues, IHarvestMapValues, IHarvestMapValues];
-
-export type THarvestNewMap = Omit<IHarvestMapValues, "id">;
+export type IHarvestMapValuesWithoutId = Omit<IHarvestMapValues, "id">;

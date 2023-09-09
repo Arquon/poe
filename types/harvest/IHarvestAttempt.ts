@@ -2,7 +2,7 @@ import { IHarvestMapLifeForceCount, IHarvestMapValues } from "./IHarvestMapValue
 import { IHarvestPrices } from "./IHarvestPrices";
 
 export interface IHarvestAttempt {
-   maps: [IHarvestMapValues, IHarvestMapValues, IHarvestMapValues, IHarvestMapValues];
+   maps: IHarvestMapValues[];
    prices: IHarvestPrices;
    id: number;
    userId: number;
@@ -14,4 +14,9 @@ export interface IHarvestAttemptView {
    prices: IHarvestPrices;
    invitations: number;
    id: number;
+}
+
+export interface IHarvestAttemptViewInfo {
+   attempts: IHarvestAttemptView[];
+   total: number;
 }

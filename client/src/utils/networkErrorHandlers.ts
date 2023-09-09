@@ -88,15 +88,20 @@ const defaultHarvestErrorMessages: HarvestErrors = {
 export function harvestNetworkErrorsHandler(error: unknown, customErrorMessages?: DeepPartial<HarvestErrors>): string {
    if (axios.isAxiosError(error)) {
       if (!error.response) return "Axios Error";
-      const { statusText, status: code } = error.response;
+      const {
+         status: code,
+         data: { message },
+      } = error.response;
       if (code === 400) {
-         switch (statusText) {
+         switch (message) {
             default:
                return customErrorMessages?._401?.default ?? defaultHarvestErrorMessages._401.default;
          }
       }
       if (code === 404) {
-         switch (statusText) {
+         switch (message) {
+            case "ATTEMPT_NOT_FOUND":
+               return customErrorMessages?._404?.attemptNotFound ?? defaultHarvestErrorMessages._404.attemptNotFound;
             default:
                return customErrorMessages?._404?.default ?? defaultHarvestErrorMessages._404.default;
          }

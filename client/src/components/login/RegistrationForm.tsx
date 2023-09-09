@@ -15,9 +15,9 @@ interface RegistrationFormState extends IAuthData {
 }
 
 const initialData: RegistrationFormState = {
-   nickname: "test",
-   password: "Test1234",
-   passwordRepeat: "Test1234",
+   nickname: "",
+   password: "",
+   passwordRepeat: "",
 };
 
 const validatorConfig: TValidator<RegistrationFormState> = {
@@ -89,33 +89,35 @@ export const RegistrationForm: FC<RegistrationFormProps> = ({}) => {
 
    return (
       <form onSubmit={onSubmitHandler}>
-         <TextField
-            label="Nickname"
-            value={data.nickname}
-            onChange={(nickname) => {
-               onChangeHandler({ nickname });
-            }}
-            error={errors.nickname ?? networkErrors.nickname}
-         />
-         <TextField
-            label="Пароль"
-            value={data.password}
-            onChange={(password) => {
-               onChangeHandler({ password });
-            }}
-            error={errors.password ?? networkErrors.password}
-            type="password"
-         />
-         <TextField
-            label="Повторите пароль"
-            value={data.passwordRepeat}
-            onChange={(passwordRepeat) => {
-               onChangeHandler({ passwordRepeat });
-            }}
-            error={errors.passwordRepeat}
-            type="password"
-         />
-         <Button className="btn-primary" type="submit" disabled={isError}>
+         <div className="mb-3">
+            <TextField
+               label="Nickname"
+               value={data.nickname}
+               onChange={(nickname) => {
+                  onChangeHandler({ nickname });
+               }}
+               error={errors.nickname ?? networkErrors.nickname}
+            />
+            <TextField
+               label="Пароль"
+               value={data.password}
+               onChange={(password) => {
+                  onChangeHandler({ password });
+               }}
+               error={errors.password ?? networkErrors.password}
+               type="password"
+            />
+            <TextField
+               label="Повторите пароль"
+               value={data.passwordRepeat}
+               onChange={(passwordRepeat) => {
+                  onChangeHandler({ passwordRepeat });
+               }}
+               error={errors.passwordRepeat}
+               type="password"
+            />
+         </div>
+         <Button className="btn-primary w-100" type="submit" disabled={isError}>
             Зарегистрироваться
          </Button>
       </form>
