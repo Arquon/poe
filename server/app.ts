@@ -45,18 +45,26 @@ if (isProd) {
    });
 }
 
+let isErrorHttps = false;
+
 if (isProd) {
-   https
-      .createServer(
-         {
-            key: fs.readFileSync("/etc/letsencrypt/live/example.com/privkey.pem", "utf8"),
-            cert: fs.readFileSync("/etc/letsencrypt/live/example.com/cert.pem", "utf8"),
-            ca: fs.readFileSync("/etc/letsencrypt/live/example.com/chain.pem", "utf8"),
-         },
-         app
-      )
-      .listen(serverPort, () => console.log(`HTTPS Server Started on port: ${serverPort}`));
-} else {
+   try {
+      https
+         .createServer(
+            {
+               key: fs.readFileSync("/etc/letsencrypt/live/1962779-wd45981.twc1.net/privkey.pem", "utf8"),
+               cert: fs.readFileSync("/etc/letsencrypt/live/1962779-wd45981.twc1.net/cert.pem", "utf8"),
+               ca: fs.readFileSync("/etc/letsencrypt/live/1962779-wd45981.twc1.net/chain.pem", "utf8"),
+            },
+            app
+         )
+         .listen(serverPort, () => console.log(`HTTPS Server Started on port: ${serverPort}`));
+   } catch (error) {
+      isErrorHttps = true;
+   }
+}
+
+if (!isProd || isErrorHttps) {
    app.listen(serverPort, () => {
       console.log(chalk.green(`Server started on port: ${serverPort}`));
    });
