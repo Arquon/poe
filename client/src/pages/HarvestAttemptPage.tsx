@@ -7,7 +7,6 @@ import { useNavigateSearch } from "@/hooks/useNavigateSearch";
 import { ModalProvider } from "@/providers/ModalProvider";
 import { ERoutes } from "@/router/router";
 import harvestAsyncActions from "@/store/harvest/actions";
-import { harvestSyncActions } from "@/store/harvest/slice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { toastError, toastSuccess } from "@/utils/functions/functions";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -44,10 +43,6 @@ const HarvestAttemptPageComponent: FC<HarvestAttemptPageProps> = () => {
 
    useEffect(() => {
       fetchHarvestAttempt();
-
-      return () => {
-         dispatch(harvestSyncActions.resetAttempt());
-      };
    }, []);
 
    const updateAttempt = async (data: IHarvestAttemptForm): Promise<void> => {

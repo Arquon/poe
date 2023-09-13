@@ -29,7 +29,7 @@ export function useHarvestForm(): UseHarvestFormReturnType {
 
    useEffect(() => {
       return () => {
-         dispatch(harvestSyncActions.resetAttempt());
+         if (attempt.id) dispatch(harvestSyncActions.resetAttempt());
       };
    }, []);
 

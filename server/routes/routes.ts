@@ -7,7 +7,10 @@ import { redirectMiddleware } from "@/middleware/redirect.middleware";
 
 const router = Router();
 
-router.use(redirectMiddleware);
+const isProd = process.env.NODE_ENV === "production";
+
+if (isProd) router.use(redirectMiddleware);
+
 router.use("/user", userRouter);
 router.use("/harvest", harvestRouter);
 router.use(errorHandler);
