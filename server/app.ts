@@ -5,6 +5,8 @@ import chalk from "chalk";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import https from "https";
+import fs from "fs";
 
 import config from "./config/config.json";
 import router from "./routes/routes";
@@ -43,6 +45,19 @@ if (isProd) {
    });
 }
 
-app.listen(serverPort, () => {
-   console.log(chalk.green(`Server started on port: ${serverPort}`));
-});
+if (isProd) {
+   https
+      .createServer(
+         {
+            key: fs.readFileSync("/etc/letsencrypt/live/example.com/privkey.pem", "utf8"),
+            cert: fs.readFileSync("/etc/letsencrypt/live/example.com/cert.pem", "utf8"),
+            ca: fs.readFileSync("/etc/letsencrypt/live/example.com/chain.pem", "utf8"),
+         },
+         app
+      )
+      .listen(serverPort, () => console.log(`HTTPS Server Started on port: ${serverPort}`));
+} else {
+   app.listen(serverPort, () => {
+      console.log(chalk.green(`Server started on port: ${serverPort}`));
+   });
+}
