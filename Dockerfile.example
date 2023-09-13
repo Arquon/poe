@@ -1,0 +1,26 @@
+FROM node:18.17.1-alpine as dockerApp
+
+WORKDIR /app/types
+
+COPY types /app/types
+
+WORKDIR /app/client
+
+COPY client/package*.json /app/client
+
+RUN npm ci
+
+COPY client /app/client
+
+RUN npm run build_prod
+
+WORKDIR /app/server
+
+COPY server/package*.json /app/server
+
+RUN npm ci
+RUN npm rebuild bcrypt 
+
+COPY server /app/server
+
+RUN mv /app/client/dist /app/server/client
