@@ -60,6 +60,7 @@ if (isProd) {
          )
          .listen(serverPort, () => console.log(`HTTPS Server Started on port: ${serverPort}`));
    } catch (error) {
+      console.log(error);
       isErrorHttps = true;
    }
 }
