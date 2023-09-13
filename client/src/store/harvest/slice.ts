@@ -59,8 +59,9 @@ const harvestSlice = createSlice({
          .addCase(addAttempt.fulfilled, (state, action) => {
             const attemptView = getAttemptViewFromAttempt(action.payload);
             state.attempts.unshift(attemptView);
-            state.currentAttempt = action.payload;
-            state.attemptErrors = HarvestValidatorService.getAttemptErrors(action.payload);
+            const currentAttempt = HarvestFormService.getEmptyAttempt(state.attempts[0]?.prices);
+            state.currentAttempt = currentAttempt;
+            state.attemptErrors = HarvestValidatorService.getAttemptErrors(currentAttempt);
          })
          .addCase(getAttempts.fulfilled, (state, action) => {
             state.attempts = action.payload.attempts;
