@@ -1,5 +1,6 @@
 client/node_modules/
 client/dist/
+client/config/config.json
 server/node_modules/
 server/client/
 server/config/config.json

@@ -17,13 +17,18 @@ const serverPort = isProd ? prod.server_port : dev.server_port;
 
 const app = express();
 
-app.use(
-   cors({
-      origin: ["http://localhost:8000"],
-      methods: ["GET", "OPTIONS", "POST", "PUT", "DELETE", "PATCH"],
-      credentials: true,
-   })
-);
+if (isProd) {
+   app.use(cors());
+} else {
+   app.use(
+      cors({
+         origin: ["http://localhost:8000"],
+         methods: ["GET", "OPTIONS", "POST", "PUT", "DELETE", "PATCH"],
+         credentials: true,
+      })
+   );
+}
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api", router);
