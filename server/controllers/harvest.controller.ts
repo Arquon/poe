@@ -52,6 +52,7 @@ class HarvestController implements IHarvestController {
                throw createError(400, "USER_NOT_FOUND");
             }
          }
+         throw error;
       }
    }
 

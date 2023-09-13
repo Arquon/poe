@@ -1,5 +1,5 @@
 import { IHarvestAttemptNew } from "@@@/types/api/harvest/IHarvestAttemptRequest";
-import { IHarvestAttempt, IHarvestAttemptView, IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestRunAttempt";
+import { IHarvestAttempt, IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
 import { Nullable } from "@/types/default";
 
 export interface IGetAttemptsInfo {

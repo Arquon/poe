@@ -27,12 +27,6 @@ export function useHarvestForm(): UseHarvestFormReturnType {
       dispatch(harvestSyncActions.validateAttempt());
    }, [attempt]);
 
-   useEffect(() => {
-      return () => {
-         if (attempt.id) dispatch(harvestSyncActions.resetAttempt());
-      };
-   }, []);
-
    const placeHolderAttempt = averageAttempts?.user ?? averageAttempts?.global;
 
    return { attempt, errors, placeHolderAttempt, setAttemptValues };

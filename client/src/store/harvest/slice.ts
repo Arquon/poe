@@ -66,7 +66,6 @@ const harvestSlice = createSlice({
          .addCase(getAttempts.fulfilled, (state, action) => {
             state.attempts = action.payload.attempts;
             state.total = action.payload.total;
-            state.currentAttempt.prices = action.payload.attempts[0]?.prices ?? state.currentAttempt.prices;
          })
          .addCase(getSingleAttempt.fulfilled, (state, action) => {
             state.currentAttempt = action.payload;

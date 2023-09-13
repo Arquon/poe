@@ -7,6 +7,7 @@ import { useNavigateSearch } from "@/hooks/useNavigateSearch";
 import { ModalProvider } from "@/providers/ModalProvider";
 import { ERoutes } from "@/router/router";
 import harvestAsyncActions from "@/store/harvest/actions";
+import { harvestSyncActions } from "@/store/harvest/slice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { toastError, toastSuccess } from "@/utils/functions/functions";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -82,10 +83,11 @@ interface IHarvestPageProps {}
 export const HarvestAttemptPage: FC<IHarvestPageProps> = () => {
    const navigate = useNavigateSearch();
    const location = useLocation();
+   const dispatch = useAppDispatch();
 
    const closeModal = (): void => {
       const params = location.state?.page && location.state.page !== 1 ? { page: location.state?.page } : undefined;
-
+      dispatch(harvestSyncActions.resetAttempt());
       navigate(ERoutes.harvest, params);
    };
 
