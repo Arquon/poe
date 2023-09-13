@@ -119,15 +119,16 @@ export function harvestNetworkErrorsHandler(error: unknown, customErrorMessages?
 export function signInNetworkErrorsHandler(error: unknown): ValidationErrors<IAuthData> | string {
    if (axios.isAxiosError(error)) {
       if (!error.response) throw new Error("Axios Error");
-      const { code, message }: { code: number; message: string } = error.response.data.error;
+      const { status, data } = error.response;
+      const { message } = data;
       const errorObject: ValidationErrors<IAuthData> = {};
-      if (code === 400) {
+      if (status === 400) {
          switch (message) {
             case "INVALID_NICKNAME":
                errorObject.nickname = "Введен некорректный nickname";
                return errorObject;
             case "USER_NOT_FOUND":
-               errorObject.nickname = "Пользователь с указанным email не зарегистрирован";
+               errorObject.nickname = "Пользователь с указанным nickname не зарегистрирован";
                return errorObject;
             case "INVALID_PASSWORD":
                errorObject.password = "Введен неверный пароль";

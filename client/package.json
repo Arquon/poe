@@ -6,6 +6,7 @@
    "scripts": {
       "build": "cross-env NODE_ENV='development' webpack",
       "serve": "cross-env NODE_ENV='serve' webpack serve",
+      "analyze": "cross-env NODE_ENV='analyze' webpack serve",
       "build_prod": "cross-env NODE_ENV='production' webpack"
    },
    "author": "",
@@ -16,6 +17,7 @@
       "@types/react-dom": "^18.0.11",
       "@types/redux-logger": "^3.0.9",
       "@types/uuid": "^9.0.3",
+      "@types/webpack-bundle-analyzer": "^4.6.0",
       "cross-env": "^7.0.3",
       "css-loader": "^6.7.3",
       "css-minimizer-webpack-plugin": "^5.0.0",
@@ -56,6 +58,7 @@
       "redux-logger": "^3.0.6",
       "ts-node": "^10.9.1",
       "ts-xor": "^1.1.0",
-      "uuid": "^9.0.0"
+      "uuid": "^9.0.0",
+      "webpack-bundle-analyzer": "^4.9.1"
    }
 }

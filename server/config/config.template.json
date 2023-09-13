@@ -1,3 +1,10 @@
 {
-   "server_port": 0
+   "dev": {
+      "server_port": 0,
+      "jwt_secret_key": ""
+   },
+   "prod": {
+      "server_port": 0,
+      "jwt_secret_key": ""
+   }
 }

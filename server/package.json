@@ -8,6 +8,7 @@
       "serve": "cross-env  NODE_ENV=development nodemon app.ts",
       "migration_create": "db-migrate create --sql-file --config='./config/database.json'",
       "migration_up": "db-migrate up --config='./config/database.json'",
+      "migration_up_prod": "db-migrate up --config='./config/database.json' -e prod",
       "migration_down": "db-migrate down --config='./config/database.json'"
    },
    "keywords": [],
@@ -26,7 +27,8 @@
       "jsonwebtoken": "^9.0.2",
       "module-alias": "^2.2.3",
       "pg": "^8.11.3",
-      "ts-node": "^10.9.1"
+      "ts-node": "^10.9.1",
+      "typescript": "^5.2.2"
    },
    "devDependencies": {
       "@types/bcrypt": "^5.0.0",

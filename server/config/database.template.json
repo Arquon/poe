@@ -6,5 +6,13 @@
       "host": "",
       "database": "",
       "port": 0
+   },
+   "prod": {
+      "driver": "",
+      "user": "",
+      "password": "",
+      "host": "",
+      "database": "",
+      "port": 0
    }
 }

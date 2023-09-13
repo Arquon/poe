@@ -5,32 +5,43 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import ReactRefreshPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
-import Dotenv from "dotenv-webpack";
-import { type RuleSetUseItem, type Configuration } from "webpack";
+// import Dotenv from "dotenv-webpack";
+import { type RuleSetUseItem, type Configuration, type WebpackPluginInstance } from "webpack";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
-const isServe = process.env.NODE_ENV === "serve";
+const isAnalyze = process.env.NODE_ENV === "analyze";
+const isServe = process.env.NODE_ENV === "serve" || isAnalyze;
 const isDev = process.env.NODE_ENV === "development" || isServe;
 const isProd = process.env.NODE_ENV === "production";
 
-const imagesFileName = "img/[name][ext]";
-const fontsFileName = "fonts/[name][ext]";
-const cssFileName = "css/[name].css";
-const dotenvPath = isDev ? "./.env.development" : "./.env.production";
+const imagesFileName = isProd ? "img/[name]-[contenthash][ext]" : "img/[name][ext]";
+const fontsFileName = isProd ? "fonts/[name]-[contenthash][ext]" : "fonts/[name][ext]";
+const jsFileName = isProd ? "js/[name]-[contenthash].js" : "js/[name].js";
+const cssFileName = isProd ? "css/[name]-[contenthash].css" : "css/[name].css";
+// const dotenvPath = isDev ? "./.env.development" : "./.env.production";
 
-const plugins = [
-   new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "src/templates/index.html",
-   }),
-   new MiniCssExtractPlugin({ filename: cssFileName }),
-   new Dotenv({
-      path: dotenvPath,
-   }),
-];
+const plugins = (): WebpackPluginInstance[] => {
+   const defaultPlugins: WebpackPluginInstance[] = [
+      new HtmlWebpackPlugin({
+         filename: "index.html",
+         template: "src/templates/index.html",
+      }),
+      new MiniCssExtractPlugin({ filename: cssFileName }),
+      // new Dotenv({
+      //    path: dotenvPath,
+      // }),
+   ];
 
-if (isServe) {
-   plugins.push(new ReactRefreshPlugin());
-}
+   if (isServe) {
+      defaultPlugins.push(new ReactRefreshPlugin());
+   }
+
+   if (isAnalyze) {
+      defaultPlugins.push(new BundleAnalyzerPlugin());
+   }
+
+   return defaultPlugins;
+};
 
 type Optimization = Configuration["optimization"];
 
@@ -75,7 +86,11 @@ const cssLoaders = (): RuleSetUseItem[] => {
    return loaders;
 };
 
-module.exports = {
+interface AppConfiguration extends Configuration {
+   devServer: Record<string, any>;
+}
+
+const config: AppConfiguration = {
    target: "web",
    mode: (isProd && "production") || (isDev && "development") || "development",
    resolve: {
@@ -89,7 +104,7 @@ module.exports = {
       index: "./src/index.tsx",
    },
    output: {
-      filename: "js/[name].js",
+      filename: jsFileName,
       path: path.resolve(__dirname, "dist"),
       clean: true,
       publicPath: "/",
@@ -104,7 +119,7 @@ module.exports = {
       port: 8000,
       historyApiFallback: true,
    },
-   plugins,
+   plugins: plugins(),
    module: {
       rules: [
          {
@@ -140,4 +155,7 @@ module.exports = {
       ],
    },
    optimization: optimization(),
+   devtool: "source-map",
 };
+
+export default config;

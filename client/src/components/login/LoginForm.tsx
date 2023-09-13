@@ -15,8 +15,8 @@ interface LoginFormProps {}
 interface LoginFormState extends IAuthData {}
 
 const initialData: LoginFormState = {
-   nickname: "test1",
-   password: "Test1234",
+   nickname: "",
+   password: "",
 };
 
 const validatorConfig: TValidator<LoginFormState> = {
@@ -60,6 +60,7 @@ export const LoginForm: FC<LoginFormProps> = ({}) => {
                   onChangeHandler({ nickname });
                }}
                error={errors.nickname ?? networkErrors.nickname}
+               className="mb-3"
             />
             <TextField
                label="Пароль"

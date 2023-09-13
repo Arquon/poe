@@ -17,6 +17,7 @@ export const TextField: FC<TextFieldProps> = ({
    error,
    onChange,
    blockClassName,
+   className,
    readOnly,
    ...otherProps
 }) => {
@@ -33,9 +34,9 @@ export const TextField: FC<TextFieldProps> = ({
 
    const inputClassName = ["form-control"];
 
-   if (error && !readOnly) {
-      inputClassName.push("is-invalid");
-   }
+   if (error && !readOnly) inputClassName.push("is-invalid");
+
+   if (className) inputClassName.push(className);
 
    const isErrorString = typeof error === "string";
 

@@ -13,6 +13,7 @@ export const authService = {
       return data.user;
    },
    signIn: async (loginData: IAuthData) => {
+      console.log("signIn");
       const { data } = await httpService.post<IUserResponse>(`${usersEndPoint}/login`, {
          ...loginData,
       });

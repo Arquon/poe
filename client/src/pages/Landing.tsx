@@ -24,7 +24,6 @@ export const Landing: FC<LandingProps> = ({}) => {
                </Link>
             )}
          </div>
-
          <Outlet />
       </section>
    );

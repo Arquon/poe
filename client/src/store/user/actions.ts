@@ -12,47 +12,46 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { type IAuthData } from "@@@/types/auth/IAuthData";
 import { type IUserData } from "@@@/types/user/IUserData";
 
-const login = createAsyncThunk<
-   IUserData,
-   IAuthData,
-   { rejectValue: string | ValidationErrors<IAuthData> }
->("user/login", async function (authData, { rejectWithValue }) {
-   try {
-      const userData = await authService.signIn(authData);
-      return userData;
-   } catch (error) {
-      const parsedError = signInNetworkErrorsHandler(error);
-      return rejectWithValue(parsedError);
+const login = createAsyncThunk<IUserData, IAuthData, { rejectValue: string | ValidationErrors<IAuthData> }>(
+   "user/login",
+   async function (authData, { rejectWithValue }) {
+      try {
+         const userData = await authService.signIn(authData);
+         return userData;
+      } catch (error) {
+         console.log({ error });
+         const parsedError = signInNetworkErrorsHandler(error);
+         console.log({ parsedError });
+         return rejectWithValue(parsedError);
+      }
    }
-});
+);
 
-const register = createAsyncThunk<
-   IUserData,
-   IAuthData,
-   { rejectValue: string | ValidationErrors<IAuthData> }
->("user/register", async function (registrationData, { rejectWithValue }) {
-   try {
-      const userData = await authService.signUp(registrationData);
-      return userData;
-   } catch (error) {
-      const parsedError = signUpNetworkErrorsHandler(error);
-      return rejectWithValue(parsedError);
+const register = createAsyncThunk<IUserData, IAuthData, { rejectValue: string | ValidationErrors<IAuthData> }>(
+   "user/register",
+   async function (registrationData, { rejectWithValue }) {
+      try {
+         const userData = await authService.signUp(registrationData);
+         return userData;
+      } catch (error) {
+         const parsedError = signUpNetworkErrorsHandler(error);
+         return rejectWithValue(parsedError);
+      }
    }
-});
+);
 
-const getCurrentUserData = createAsyncThunk<
-   Nullable<IUserData>,
-   undefined,
-   { rejectValue: string }
->("user/getCurrentUserData", async function (_, { rejectWithValue }) {
-   try {
-      const data = await authService.getCurrentUserData();
-      return data;
-   } catch (error) {
-      const parsedError = userNetworkErrorsHandler(error);
-      return rejectWithValue(parsedError);
+const getCurrentUserData = createAsyncThunk<Nullable<IUserData>, undefined, { rejectValue: string }>(
+   "user/getCurrentUserData",
+   async function (_, { rejectWithValue }) {
+      try {
+         const data = await authService.getCurrentUserData();
+         return data;
+      } catch (error) {
+         const parsedError = userNetworkErrorsHandler(error);
+         return rejectWithValue(parsedError);
+      }
    }
-});
+);
 
 const logout = createAsyncThunk<undefined, undefined, { rejectValue: string }>(
    "user/logout",

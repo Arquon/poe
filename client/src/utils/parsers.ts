@@ -1,4 +1,4 @@
-import { type IHarvestAttempt, type IHarvestAttemptView } from "@@@/types/harvest/IHarvestRunAttempt";
+import { type IHarvestAttempt, type IHarvestAttemptView } from "@@@/types/harvest/IHarvestAttempt";
 
 export const getAttemptViewFromAttempt = (attempt: IHarvestAttempt): IHarvestAttemptView => ({
    id: attempt.id,
