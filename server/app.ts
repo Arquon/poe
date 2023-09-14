@@ -8,14 +8,10 @@ import path from "path";
 import https from "https";
 import fs from "fs";
 
-import config from "./config/config.json";
+import { server_port as serverPort } from "./config/config.json";
 import router from "./routes/routes";
 
 const isProd = process.env.NODE_ENV === "production";
-
-const { dev, prod } = config;
-
-const serverPort = isProd ? prod.server_port : dev.server_port;
 
 const app = express();
 

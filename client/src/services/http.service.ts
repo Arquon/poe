@@ -1,14 +1,8 @@
 import axios from "axios";
-import configFile from "@@/config/config.json";
-
-const isProd = process.env.NODE_ENV === "production";
-
-const { dev, prod } = configFile;
-
-const baseURL = isProd ? prod.BASE_URL : dev.BASE_URL;
+import { BASE_URL } from "@@/config/config.json";
 
 const httpService = axios.create({
-   baseURL,
+   baseURL: BASE_URL,
    withCredentials: true,
 });
 
