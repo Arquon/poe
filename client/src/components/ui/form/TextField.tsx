@@ -1,7 +1,7 @@
 import { type ICommonTextInputProps } from "@/types/ui/ICommonInputProps";
 import { getClassNameFromArray } from "@/utils/functions/functions";
 import { floatRegex, intRegex } from "@/utils/regex";
-import React, { useRef, type FC, type ChangeEvent, type ComponentProps } from "react";
+import React, { useRef, type FC, type ChangeEvent, type ComponentProps, useState } from "react";
 
 interface TextFieldOwnProps extends ICommonTextInputProps {
    type?: "text" | "password" | "number";
@@ -71,17 +71,29 @@ interface TextNumberFieldProps extends Omit<TextFieldProps, "onChange" | "value"
    placeholder?: number;
 }
 
-export const TextNumericField: FC<TextNumberFieldProps> = ({ onChange, value, float, placeholder, ...otherProps }) => {
+export const TextNumericField: FC<TextNumberFieldProps> = ({
+   onChange,
+   value: propValue,
+   float,
+   placeholder,
+   ...otherProps
+}) => {
+   const [inputValue, setInputValue] = useState(String(propValue));
+
    const regex = float ? floatRegex : intRegex;
 
    const onChangeHandler = (value: string): void => {
-      if (regex.test(value)) onChange(+value);
+      if (value.at(-1) === ",") value = value.slice(0, -1) + ".";
+      if (regex.test(value)) {
+         setInputValue(value);
+         onChange(+value);
+      }
    };
 
    return (
       <TextField
          onChange={onChangeHandler}
-         value={String(value)}
+         value={String(inputValue)}
          placeholder={placeholder ? String(placeholder) : undefined}
          {...otherProps}
       />

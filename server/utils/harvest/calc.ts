@@ -2,6 +2,7 @@ import { IHarvestAverageAttempt } from "@@@/types/harvest/IHarvestSingleAttemptV
 import { IHarvestMapValues, IHarvestMapValuesWithoutId } from "@@@/types/harvest/IHarvestMapValues";
 import { IHarvestAttempt } from "@@@/types/harvest/IHarvestAttempt";
 import { Nullable } from "@/types/default";
+import { round } from "../functions/common";
 
 interface HarvestAttemptsTotal {
    firstMaps: IHarvestMapValues[];
@@ -52,7 +53,7 @@ export function findAverageValues(attempts: IHarvestAttempt[]): Nullable<IHarves
 
          if (attempt.invitations) {
             acc.invitations.count += attempt.invitations;
-            acc.invitations.price += attempt.prices.invitation;
+            acc.invitations.price += attempt.prices.invitation * attempt.invitations;
             acc.invitations.attempts += 1;
          }
 
@@ -69,13 +70,13 @@ export function findAverageValues(attempts: IHarvestAttempt[]): Nullable<IHarves
    const averageAttempt: IHarvestAverageAttempt = {
       maps: [firstMapAverageValue, secondMapAverageValue, thirdMapAverageValue, fourthMapAverageValue],
       prices: {
-         yellow: prices.yellow / totalLength,
-         blue: prices.blue / totalLength,
-         red: prices.red / totalLength,
-         memory: prices.memory / totalLength,
-         invitation: invitations.count !== 0 ? invitations.price / invitations.count : 0,
+         yellow: round(prices.yellow / totalLength, 0),
+         blue: round(prices.blue / totalLength, 0),
+         red: round(prices.red / totalLength, 0),
+         memory: round(prices.memory / totalLength),
+         invitation: round(invitations.count !== 0 ? invitations.price / invitations.count : 0),
       },
-      invitations: invitations.count / totalLength,
+      invitations: round(invitations.count / totalLength),
    };
 
    return averageAttempt;
@@ -105,11 +106,11 @@ function findMapAverageValue(attemptsMaps: IHarvestMapValues[], order?: number):
 
    const averageMapValues: IHarvestMapValuesWithoutId = {
       result: {
-         yellow: totalMapValues.result.yellow / totalLength,
-         blue: totalMapValues.result.blue / totalLength,
-         red: totalMapValues.result.red / totalLength,
+         yellow: round(totalMapValues.result.yellow / totalLength, 0),
+         blue: round(totalMapValues.result.blue / totalLength, 0),
+         red: round(totalMapValues.result.red / totalLength, 0),
       },
-      quantity: totalMapValues.quantity / totalLength,
+      quantity: round(totalMapValues.quantity / totalLength, 0),
       order: totalMapValues.order,
    };
 
