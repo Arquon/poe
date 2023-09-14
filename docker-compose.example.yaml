@@ -5,7 +5,7 @@ services:
       build:
          context: .
          dockerfile: Dockerfile
-      command: sh -c "npm run migration_up_prod && npm start"
+      command: sh -c "npm run migration_up && npm start"
       ports:
          - 80:80
       depends_on:
