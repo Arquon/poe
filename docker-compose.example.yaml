@@ -25,7 +25,7 @@ services:
          - POSTGRES_DB=
       image: postgres:15.4
       volumes:
-         - dbdata:/data/db
+         - db_volume:/var/lib/postgresql/data
       networks:
          - app-network
 
@@ -34,4 +34,4 @@ networks:
       driver: bridge
 
 volumes:
-   dbdata:
+   db_volume:

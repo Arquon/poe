@@ -12,7 +12,7 @@ export const Landing: FC<LandingProps> = ({}) => {
    const isAuth = !!user;
 
    return (
-      <section className="landing">
+      <section className="landing poe">
          <div>
             {isAuth ? (
                <Link className="fs-1" to={ERoutes.harvest}>
