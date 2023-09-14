@@ -56,8 +56,9 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
 
    const lifeForceInsertHandler = (value: string): string => {
       const test = value.split("--------");
+      console.log({ value, test });
       if (test.length > 1) {
-         const parsedValue = test[1].slice(16, 21).replace(" ", "");
+         const parsedValue = test[1].slice(16, 17) + test[1].slice(18, 21);
          return parsedValue;
       }
 
