@@ -12,6 +12,7 @@ export interface IHarvestAttemptFormCreate extends IHarvestAttemptCreateRequest 
 }
 export interface IHarvestAttemptFormUpdate extends IHarvestAttemptUpdateRequest {
    userId: number;
+   id: number;
 }
 
 export type IHarvestAttemptForm = IHarvestAttemptFormCreate | IHarvestAttemptFormUpdate;

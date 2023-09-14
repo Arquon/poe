@@ -69,6 +69,7 @@ interface TextNumberFieldProps extends Omit<TextFieldProps, "onChange" | "value"
    value: number | string;
    float?: boolean;
    placeholder?: number;
+   insertHandler?: (value: string) => string;
 }
 
 export const TextNumericField: FC<TextNumberFieldProps> = ({
@@ -76,6 +77,7 @@ export const TextNumericField: FC<TextNumberFieldProps> = ({
    value: propValue,
    float,
    placeholder,
+   insertHandler,
    ...otherProps
 }) => {
    const [inputValue, setInputValue] = useState(String(propValue));
@@ -83,6 +85,7 @@ export const TextNumericField: FC<TextNumberFieldProps> = ({
    const regex = float ? floatRegex : intRegex;
 
    const onChangeHandler = (value: string): void => {
+      if (insertHandler) value = insertHandler(value);
       if (value.at(-1) === ",") value = value.slice(0, -1) + ".";
       if (regex.test(value)) {
          setInputValue(value);

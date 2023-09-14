@@ -54,6 +54,16 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
       });
    };
 
+   const lifeForceInsertHandler = (value: string): string => {
+      const test = value.split("--------");
+      if (test.length > 1) {
+         const parsedValue = test[1].slice(16, 21).replace(" ", "");
+         return parsedValue;
+      }
+
+      return value;
+   };
+
    return (
       <div className="row harvest-map">
          <div className="col-2">{heading}</div>
@@ -67,6 +77,7 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
                   placeholder={placeHolderMap ? Math.round(placeHolderMap.result.yellow) : undefined}
                   error={yellowError}
                   readOnly={readOnly}
+                  insertHandler={lifeForceInsertHandler}
                />
             </div>
             <div className="col-3">
@@ -78,6 +89,7 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
                   placeholder={placeHolderMap ? Math.round(placeHolderMap.result.blue) : undefined}
                   error={blueError}
                   readOnly={readOnly}
+                  insertHandler={lifeForceInsertHandler}
                />
             </div>
             <div className="col-3">
@@ -89,6 +101,7 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
                   placeholder={placeHolderMap ? Math.round(placeHolderMap.result.red) : undefined}
                   error={redError}
                   readOnly={readOnly}
+                  insertHandler={lifeForceInsertHandler}
                />
             </div>
             <div className="col-3">
@@ -100,6 +113,7 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
                   value={quantity || ""}
                   error={quantityError}
                   readOnly={readOnly}
+                  insertHandler={lifeForceInsertHandler}
                />
             </div>
          </div>
