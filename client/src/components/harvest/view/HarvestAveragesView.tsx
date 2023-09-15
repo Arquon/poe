@@ -70,7 +70,9 @@ export const HarvestAveragesView: FC<HarvestAveragesViewProps> = ({}) => {
       <div>
          <h3 className="mb-3 d-flex justify-content-between align-items-end">
             <span>Средние значения за воспоминание</span>
-            {currentAverage?.total && <span className="fs-5">Всего воспоминаний: {currentAverage?.total}</span>}
+            {currentAverage?.attemptsCount && (
+               <span className="fs-5">Всего воспоминаний: {currentAverage?.attemptsCount}</span>
+            )}
          </h3>
          <ul className="nav  nav-pills d-flex justify-content-center mb-3">
             {averageAttempts?.currentUser && (
