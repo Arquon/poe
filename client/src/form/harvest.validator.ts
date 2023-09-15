@@ -1,11 +1,12 @@
 import { type FormValidationErrors } from "@/types/validator/errorTypes";
-import { type IHarvestMapValues } from "@@@/types/harvest/IHarvestMapValues";
+import { type IHarvestMapLifeForceCount, type IHarvestMapValues } from "@@@/types/harvest/IHarvestMapValues";
 import { type IHarvestAttemptForm } from "./harvest.form";
 import { type IHarvestPrices } from "@@@/types/harvest/IHarvestPrices";
 
 export type THarvestAttemptFormErrors = FormValidationErrors<IHarvestAttemptForm>;
 export type THarvestMapFormErrors = FormValidationErrors<IHarvestMapValues>;
 export type THarvestPricesFormErrors = FormValidationErrors<IHarvestPrices>;
+export type THarvestMapLifeForceFormErrors = FormValidationErrors<IHarvestMapLifeForceCount>;
 
 export class HarvestValidatorService {
    static getAttemptErrors(attempt: IHarvestAttemptForm): THarvestAttemptFormErrors {
@@ -45,21 +46,35 @@ export class HarvestValidatorService {
       return errors;
    }
 
-   static validateMap(map: IHarvestMapValues): THarvestMapFormErrors {
-      const errors = this.getMapErrors(map.id);
-      errors.result = {
-         blue: !map.result.blue,
-         red: !map.result.red,
-         yellow: !map.result.yellow,
+   static validateMapValues(
+      currentMap: IHarvestMapLifeForceCount,
+      previousMap: IHarvestMapLifeForceCount
+   ): THarvestMapLifeForceFormErrors {
+      const errors: THarvestMapLifeForceFormErrors = {
+         yellow: currentMap.yellow < previousMap.yellow,
+         blue: currentMap.blue < previousMap.blue,
+         red: currentMap.red < previousMap.red,
       };
-      errors.quantity = !map.quantity;
+
+      return errors;
+   }
+
+   static validateMap(mapToValidate: IHarvestMapValues, maps: IHarvestMapValues[]): THarvestMapFormErrors {
+      const errors = this.getMapErrors(mapToValidate.id);
+
+      if (mapToValidate.order !== 1) {
+         const previousMap = maps.find((map) => map.order === mapToValidate.order - 1);
+         if (previousMap) errors.result = this.validateMapValues(mapToValidate.result, previousMap.result);
+      }
+
+      errors.quantity = !mapToValidate.quantity;
       return errors;
    }
 
    static validateAttempt(attempt: IHarvestAttemptForm): THarvestAttemptFormErrors {
       const errors = this.getAttemptErrors(attempt);
 
-      errors.maps = attempt.maps.map((attemptMap) => this.validateMap(attemptMap));
+      errors.maps = attempt.maps.map((attemptMap, i, maps) => this.validateMap(attemptMap, maps));
       errors.prices = {
          blue: !attempt.prices.blue,
          red: !attempt.prices.red,

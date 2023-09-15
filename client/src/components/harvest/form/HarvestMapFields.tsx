@@ -55,10 +55,9 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
    };
 
    const lifeForceInsertHandler = (value: string): string => {
-      const test = value.split("--------");
-      console.log({ value, test });
+      const test = value.split("Размер стопки: ");
       if (test.length > 1) {
-         const parsedValue = test[1].slice(16, 17) + test[1].slice(18, 21);
+         const parsedValue = test[1].split("/")[0].replaceAll(String.fromCharCode(160), "");
          return parsedValue;
       }
 

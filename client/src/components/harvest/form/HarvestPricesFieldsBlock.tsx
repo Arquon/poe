@@ -37,6 +37,16 @@ export const HarvestPricesFieldsBlock: FC<HarvestPricesFieldsBlockProps> = ({
    } = priceErrors;
    const { yellow, blue, red, memory, invitation: invitationPrice } = prices;
 
+   const priceInsertHandler = (value: string): string => {
+      const test = value.split("Размер стопки: ");
+      if (test.length > 1) {
+         const parsedValue = test[1].split("/")[0].replaceAll(String.fromCharCode(160), "");
+         return parsedValue;
+      }
+
+      return value;
+   };
+
    return (
       <>
          <div className="mb-3">
@@ -62,6 +72,7 @@ export const HarvestPricesFieldsBlock: FC<HarvestPricesFieldsBlockProps> = ({
                         setPriceValues({ yellow });
                      }}
                      readOnly={readOnly}
+                     insertHandler={priceInsertHandler}
                   />
                </div>
                <div className="col-4">
@@ -74,6 +85,7 @@ export const HarvestPricesFieldsBlock: FC<HarvestPricesFieldsBlockProps> = ({
                         setPriceValues({ blue });
                      }}
                      readOnly={readOnly}
+                     insertHandler={priceInsertHandler}
                   />
                </div>
                <div className="col-4">
@@ -86,6 +98,7 @@ export const HarvestPricesFieldsBlock: FC<HarvestPricesFieldsBlockProps> = ({
                         setPriceValues({ red });
                      }}
                      readOnly={readOnly}
+                     insertHandler={priceInsertHandler}
                   />
                </div>
             </div>
