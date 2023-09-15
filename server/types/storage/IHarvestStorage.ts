@@ -9,9 +9,10 @@ export interface IGetAttemptsInfo {
 
 export interface IHarvestStorage {
    createAttempt(attempt: IHarvestAttemptNew): Promise<IHarvestAttempt>;
-   getAttemptsForUser(userId: number, info: IGetAttemptsInfo): Promise<IHarvestAttemptViewInfo>;
+   getUserAttemptsView(userId: number, info: IGetAttemptsInfo): Promise<IHarvestAttemptViewInfo>;
    getSingleAttempt(attemptId: number): Promise<Nullable<IHarvestAttempt>>;
    getAllAttempts(): Promise<IHarvestAttempt[]>;
+   getUserAllAttempts(nickname: string): Promise<Nullable<IHarvestAttempt[]>>;
    updateAttempt(attempt: Nullable<IHarvestAttempt>): Promise<Nullable<IHarvestAttempt>>;
    deleteAttempt(userId: number, attemptId: number): Promise<Nullable<number>>;
 }

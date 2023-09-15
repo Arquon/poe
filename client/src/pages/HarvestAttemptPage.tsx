@@ -1,6 +1,6 @@
 import { HarvestForm } from "@/components/harvest/form/HarvestForm";
 import { HarvestView } from "@/components/harvest/view/HarvestView";
-import { ModalMedium } from "@/components/modals/MediumModal";
+import { ModalMedium } from "@/components/modals/ModalMedium";
 import { LightSpinner } from "@/components/ui/Spinner";
 import { type IHarvestAttemptForm } from "@/form/harvest.form";
 import { useNavigateSearch } from "@/hooks/useNavigateSearch";
@@ -51,7 +51,7 @@ const HarvestAttemptPageComponent: FC<HarvestAttemptPageProps> = () => {
       setIsLoadingUpdateAttempt(true);
       try {
          unwrapResult(await dispatch(harvestAsyncActions.updateAttempt({ ...data, id: currentAttempt.id })));
-         unwrapResult(await dispatch(harvestAsyncActions.getAverageAttempts()));
+         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()));
          toastSuccess("Попытка обновлена");
       } finally {
          setIsLoadingUpdateAttempt(false);

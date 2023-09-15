@@ -1,5 +1,9 @@
-import { type IHarvestAverageAttemptsObj } from "../../harvest/IHarvestSingleAttemptView";
+import { IHarvestAverageAttempt, type IHarvestAverageAttemptsObj } from "../../harvest/IHarvestSingleAttemptView";
 
 export interface IHarvestAverageAttemptsResponse {
    average: IHarvestAverageAttemptsObj;
+}
+
+export interface IHarvestUserAverageAttemptsResponse {
+   user: IHarvestAverageAttempt | null;
 }

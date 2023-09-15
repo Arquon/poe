@@ -5,9 +5,9 @@ export type IHarvestSingleAttemptView = Omit<IHarvestAttempt, "id" | "userId" | 
    maps: IHarvestMapValuesWithoutId[];
 };
 
-export type IHarvestAverageAttempt = Omit<IHarvestSingleAttemptView, "note">;
+export type IHarvestAverageAttempt = Omit<IHarvestSingleAttemptView, "note"> & { total: number };
 
 export interface IHarvestAverageAttemptsObj {
-   user: IHarvestAverageAttempt | null;
+   currentUser: IHarvestAverageAttempt | null;
    global: IHarvestAverageAttempt | null;
 }

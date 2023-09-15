@@ -77,6 +77,7 @@ export function findAverageValues(attempts: IHarvestAttempt[]): Nullable<IHarves
          invitation: round(invitations.count !== 0 ? invitations.price / invitations.count : 0),
       },
       invitations: round(invitations.count / totalLength),
+      total: totalLength,
    };
 
    return averageAttempt;

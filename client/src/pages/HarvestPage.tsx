@@ -9,7 +9,7 @@ import harvestAsyncActions from "@/store/harvest/actions";
 import { useAppDispatch } from "@/store/store";
 import { type IHarvestAttemptCreateRequest as IHarvestAttemptNewForm } from "@@@/types/api/harvest/IHarvestAttemptRequest";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { ModalMedium } from "@/components/modals/MediumModal";
+import { ModalMedium } from "@/components/modals/ModalMedium";
 import { Outlet, useLocation, useMatch, useSearchParams } from "react-router-dom";
 import { toastError, toastSuccess } from "@/utils/functions/functions";
 import { ERoutes } from "@/router/router";
@@ -53,7 +53,7 @@ const HarvestPageComponent: FC<HarvestPageProps> = ({}) => {
       setIsLoadingAddAttempt(true);
       try {
          unwrapResult(await dispatch(harvestAsyncActions.addAttempt(data)));
-         unwrapResult(await dispatch(harvestAsyncActions.getAverageAttempts()));
+         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()));
          toastSuccess("Попытка добавлена");
          setIsModalFormShow(false);
       } finally {
@@ -74,7 +74,7 @@ const HarvestPageComponent: FC<HarvestPageProps> = ({}) => {
 
    async function fetchHarvestAverageAttempts(): Promise<void> {
       try {
-         unwrapResult(await dispatch(harvestAsyncActions.getAverageAttempts()));
+         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()));
       } catch (error) {
          console.log(error);
       }

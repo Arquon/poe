@@ -12,6 +12,8 @@ const INSERT_INTO_HARVEST_QUERY = "SELECT * FROM add_harvest_attempt($1, $2, $3,
 const GET_HARVEST_ATTEMPTS_FOR_USER_QUERY = "SELECT * FROM get_harvest_views_attempts_for_user($1, $2, $3)";
 const GET_SINGLE_HARVEST_ATTEMPT_QUERY = "SELECT * FROM get_harvest_full_attempt($1)";
 const GET_ALL_HARVEST_ATTEMPTS_QUERY = "SELECT * FROM get_all_harvest_attempts($1)";
+const GET_USER_HARVEST_ATTEMPTS_QUERY =
+   "SELECT h.*, u.nickname FROM get_all_harvest_attempts($1) as h right join users as u on h.user_id = u.id where u.nickname = $2";
 
 const UPDATE_HARVEST_ATTEMPT_QUERY = "SELECT * FROM update_harvest_attempt($1, $2, $3, $4, $5)";
 const DELETE_HARVEST_ATTEMPT_QUERY = "SELECT * FROM delete_harvest_attempt($1)";
@@ -25,6 +27,10 @@ interface IHarvestAttemptDB {
    prices: IHarvestPrices;
    invitations: number;
    note: string;
+}
+
+interface IHarvestAttemptDBWithNickname extends IHarvestAttemptDB {
+   nickname: string;
 }
 
 const constructAttempt = (attempt: IHarvestAttemptDB): IHarvestAttempt => ({
@@ -48,7 +54,7 @@ export class HarvestStorageDb implements IHarvestStorage {
       return constructAttempt(newAttempt);
    }
 
-   async getAttemptsForUser(userId: number, info: IGetAttemptsInfo): Promise<IHarvestAttemptViewInfo> {
+   async getUserAttemptsView(userId: number, info: IGetAttemptsInfo): Promise<IHarvestAttemptViewInfo> {
       const view = (await db.query<IHarvestAttemptViewInfo>(GET_HARVEST_ATTEMPTS_FOR_USER_QUERY, [userId, info.count, info.page])).rows[0];
       return { attempts: view.attempts ?? [], total: view.total };
    }
@@ -62,6 +68,13 @@ export class HarvestStorageDb implements IHarvestStorage {
    async getAllAttempts(): Promise<IHarvestAttempt[]> {
       const attemptsFromDb = (await db.query<IHarvestAttemptDB>(GET_ALL_HARVEST_ATTEMPTS_QUERY, [50])).rows;
       const attempts = attemptsFromDb.map((attemptFromDb) => constructAttempt(attemptFromDb));
+      return attempts;
+   }
+
+   async getUserAllAttempts(nickname: string): Promise<Nullable<IHarvestAttempt[]>> {
+      const attemptsFromDb = (await db.query<IHarvestAttemptDBWithNickname>(GET_USER_HARVEST_ATTEMPTS_QUERY, [50, nickname])).rows;
+      if (attemptsFromDb.length === 0) return null;
+      const attempts = attemptsFromDb.filter((attempt) => attempt.id !== null).map((attemptFromDb) => constructAttempt(attemptFromDb));
       return attempts;
    }
 

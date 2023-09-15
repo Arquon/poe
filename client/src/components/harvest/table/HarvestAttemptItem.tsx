@@ -26,7 +26,7 @@ export const HarvestAttemptItem: FC<HarvestRunAttemptItemProps> = ({ attempt }) 
          unwrapResult(await dispatch(harvestAsyncActions.deleteAttempt(id)));
          const [getAttemptsResult, getAverageAttemptsResult] = await Promise.all([
             dispatch(harvestAsyncActions.getAttempts(page)),
-            dispatch(harvestAsyncActions.getAverageAttempts()),
+            dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()),
          ]);
          unwrapResult(getAttemptsResult);
          unwrapResult(getAverageAttemptsResult);

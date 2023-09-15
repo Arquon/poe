@@ -7,6 +7,8 @@ import {
 import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
 import { type IHarvestAttempt, type IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { type IOtherUsersAverageAttempt } from "@/types/harvest/IOtherUserAverageAttempt";
+import { type Nullable } from "@/types/default";
 
 const addAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptNewForm, { rejectValue: string }>(
    "harvest/add",
@@ -49,11 +51,11 @@ const getSingleAttempt = createAsyncThunk<IHarvestAttempt, number, { rejectValue
    }
 );
 
-const getAverageAttempts = createAsyncThunk<IHarvestAverageAttemptsObj, undefined, { rejectValue: string }>(
-   "harvest/getAverages",
+const getCurrentUserAverageAttempts = createAsyncThunk<IHarvestAverageAttemptsObj, undefined, { rejectValue: string }>(
+   "harvest/getCurrentUserAverages",
    async function (_, { rejectWithValue }) {
       try {
-         const attempts = await harvestService.getAverageAttempts();
+         const attempts = await harvestService.getCurrentUserAverageAttempts();
          return attempts;
       } catch (error) {
          const parsedError = harvestNetworkErrorsHandler(error);
@@ -61,6 +63,20 @@ const getAverageAttempts = createAsyncThunk<IHarvestAverageAttemptsObj, undefine
       }
    }
 );
+
+const getOtherUserAverageAttempt = createAsyncThunk<
+   Nullable<IOtherUsersAverageAttempt>,
+   string,
+   { rejectValue: string }
+>("harvest/getOtherUserAverages", async function (nickname, { rejectWithValue }) {
+   try {
+      const averageAttempt = await harvestService.getOtherUserAverageAttempts(nickname);
+      return averageAttempt ? { [nickname]: averageAttempt } : null;
+   } catch (error) {
+      const parsedError = harvestNetworkErrorsHandler(error);
+      return rejectWithValue(parsedError);
+   }
+});
 
 const updateAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptUpdateForm, { rejectValue: string }>(
    "harvest/update",
@@ -92,10 +108,19 @@ const harvestAsyncActions = {
    addAttempt,
    getSingleAttempt,
    getAttempts,
-   getAverageAttempts,
+   getCurrentUserAverageAttempts,
+   getOtherUserAverageAttempt,
    updateAttempt,
    deleteAttempt,
 };
 
-export { addAttempt, getSingleAttempt, getAttempts, updateAttempt, deleteAttempt, getAverageAttempts };
+export {
+   addAttempt,
+   getSingleAttempt,
+   getAttempts,
+   updateAttempt,
+   deleteAttempt,
+   getCurrentUserAverageAttempts,
+   getOtherUserAverageAttempt,
+};
 export default harvestAsyncActions;

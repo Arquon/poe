@@ -2,7 +2,7 @@ import { IGetAttemptsInfo, IHarvestStorage } from "@/types/storage/IHarvestStora
 import { IHarvestAttempt } from "@@@/types/harvest/IHarvestAttempt";
 import { IHarvestAttemptResponse } from "@@@/types/api/harvest/IHarvestAttemptResponse";
 import { IHarvestAttemptListResponse } from "@@@/types/api/harvest/IHarvestAttemptListResponse";
-import { IHarvestAverageAttemptsResponse } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
+import { IHarvestAverageAttemptsResponse, IHarvestUserAverageAttemptsResponse } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
 import { IHarvestAttemptNew, IHarvestAttemptCreateRequest, IHarvestAttemptUpdateRequest } from "@@@/types/api/harvest/IHarvestAttemptRequest";
 import { HarvestStorageDb } from "@/db/storage/harvest.storage";
 import { DatabaseError } from "pg";
@@ -15,9 +15,10 @@ import { findAverageValues } from "@/utils/harvest/calc";
 
 interface IHarvestController {
    createAttempt: (req: Request<{}, {}, IHarvestAttemptCreateRequest>, res: Response<IHarvestAttemptResponse>) => Promise<void>;
-   getAttempts: (req: Request, res: Response<IHarvestAttemptListResponse>) => Promise<void>;
+   getUserAttemptsView: (req: Request, res: Response<IHarvestAttemptListResponse>) => Promise<void>;
    getSingleAttempt: (req: Request<{ id: string }>, res: Response<IHarvestAttemptResponse>) => Promise<void>;
-   getAverageAttempts: (req: Request, res: Response<IHarvestAverageAttemptsResponse>) => Promise<void>;
+   getCurrentUserAverageAttempts: (req: Request, res: Response<IHarvestAverageAttemptsResponse>) => Promise<void>;
+   getOtherUserAverageAttempts: (req: Request, res: Response<IHarvestUserAverageAttemptsResponse>) => Promise<void>;
    updateAttempt: (req: Request<{}, {}, IHarvestAttemptUpdateRequest>, res: Response<IHarvestAttemptResponse>) => Promise<void>;
    deleteAttempt: (req: Request<{ id: string }>, res: Response<IDeleteResponse>) => Promise<void>;
 }
@@ -29,9 +30,10 @@ class HarvestController implements IHarvestController {
       this.harvestStorage = harvestStorage;
 
       this.createAttempt = this.createAttempt.bind(this);
-      this.getAttempts = this.getAttempts.bind(this);
+      this.getUserAttemptsView = this.getUserAttemptsView.bind(this);
       this.getSingleAttempt = this.getSingleAttempt.bind(this);
-      this.getAverageAttempts = this.getAverageAttempts.bind(this);
+      this.getCurrentUserAverageAttempts = this.getCurrentUserAverageAttempts.bind(this);
+      this.getOtherUserAverageAttempts = this.getOtherUserAverageAttempts.bind(this);
       this.updateAttempt = this.updateAttempt.bind(this);
       this.deleteAttempt = this.deleteAttempt.bind(this);
    }
@@ -56,7 +58,7 @@ class HarvestController implements IHarvestController {
       }
    }
 
-   async getAttempts(req: Request, res: Response<IHarvestAttemptListResponse>): Promise<void> {
+   async getUserAttemptsView(req: Request, res: Response<IHarvestAttemptListResponse>): Promise<void> {
       if (!req.user) throw createHttpError(500, "user id lost: harvest get");
       const { id: userId } = req.user;
       const { count, page } = req.query;
@@ -64,7 +66,7 @@ class HarvestController implements IHarvestController {
          count: typeof count === "string" ? +count : 20,
          page: typeof page === "string" ? +page : 20,
       };
-      const data = await this.harvestStorage.getAttemptsForUser(userId, info);
+      const data = await this.harvestStorage.getUserAttemptsView(userId, info);
       res.json({ attemptsInfo: data });
    }
 
@@ -77,7 +79,7 @@ class HarvestController implements IHarvestController {
       res.json({ attempt });
    }
 
-   async getAverageAttempts(req: Request, res: Response<IHarvestAverageAttemptsResponse>): Promise<void> {
+   async getCurrentUserAverageAttempts(req: Request, res: Response<IHarvestAverageAttemptsResponse>): Promise<void> {
       if (!req.user) throw createHttpError(500, "user id lost: harvest delete");
 
       const { id: userId } = req.user;
@@ -85,11 +87,23 @@ class HarvestController implements IHarvestController {
       const userAttempts = attempts.filter((attempt) => attempt.userId === userId);
 
       const average: IHarvestAverageAttemptsObj = {
-         user: findAverageValues(userAttempts),
+         currentUser: findAverageValues(userAttempts),
          global: findAverageValues(attempts),
       };
 
       res.json({ average });
+   }
+
+   async getOtherUserAverageAttempts(req: Request, res: Response<IHarvestUserAverageAttemptsResponse>): Promise<void> {
+      if (!req.user) throw createHttpError(500, "user id lost: harvest delete");
+
+      const { nickname } = req.params;
+      const userAttempts = await this.harvestStorage.getUserAllAttempts(nickname);
+      if (!userAttempts) throw createHttpError(404, "USER_NOT_FOUND");
+      console.log({ userAttempts });
+      const averageAttempt = findAverageValues(userAttempts);
+
+      res.json({ user: averageAttempt });
    }
 
    async updateAttempt(req: Request<{}, {}, IHarvestAttemptUpdateRequest>, res: Response<IHarvestAttemptResponse>): Promise<void> {

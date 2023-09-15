@@ -1,16 +1,29 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { type IHarvestAttemptView } from "@@@/types/harvest/IHarvestAttempt";
-import { addAttempt, deleteAttempt, getAttempts, getAverageAttempts, getSingleAttempt, updateAttempt } from "./actions";
+import {
+   addAttempt,
+   deleteAttempt,
+   getAttempts,
+   getCurrentUserAverageAttempts,
+   getOtherUserAverageAttempt,
+   getSingleAttempt,
+   updateAttempt,
+} from "./actions";
 import { getAttemptViewFromAttempt } from "@/utils/parsers";
 import { HarvestFormService, type IHarvestAttemptFormCreate, type IHarvestAttemptForm } from "@/form/harvest.form";
 import { HarvestValidatorService, type THarvestAttemptFormErrors } from "@/form/harvest.validator";
 import { type Nullable } from "@/types/default";
 import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
+import { type IOtherUsersAverageAttempt } from "@/types/harvest/IOtherUserAverageAttempt";
+
+interface IHarvestAverageAttemptsSlice extends IHarvestAverageAttemptsObj {
+   otherUsers: IOtherUsersAverageAttempt;
+}
 
 interface IHarvestState {
    attempts: IHarvestAttemptView[];
    currentAttempt: IHarvestAttemptForm;
-   averageAttempts: Nullable<IHarvestAverageAttemptsObj>;
+   averageAttempts: Nullable<IHarvestAverageAttemptsSlice>;
    attemptErrors: THarvestAttemptFormErrors;
    total: number;
 }
@@ -78,8 +91,13 @@ const harvestSlice = createSlice({
             state.attemptErrors = HarvestValidatorService.getAttemptErrors(action.payload);
          })
          .addCase(deleteAttempt.fulfilled, (state, action) => {})
-         .addCase(getAverageAttempts.fulfilled, (state, action) => {
-            state.averageAttempts = action.payload;
+         .addCase(getCurrentUserAverageAttempts.fulfilled, (state, action) => {
+            state.averageAttempts = { ...action.payload, otherUsers: {} };
+         })
+         .addCase(getOtherUserAverageAttempt.fulfilled, (state, action) => {
+            if (state.averageAttempts) {
+               state.averageAttempts.otherUsers = { ...state.averageAttempts.otherUsers, ...action.payload };
+            }
          });
    },
 });

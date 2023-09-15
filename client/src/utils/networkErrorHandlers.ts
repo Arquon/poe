@@ -67,6 +67,7 @@ interface HarvestErrors extends NetworkErrors {
    };
    _404: NetworkErrors["_404"] & {
       attemptNotFound: string;
+      userNotFound: string;
    };
 }
 
@@ -81,6 +82,7 @@ const defaultHarvestErrorMessages: HarvestErrors = {
    _404: {
       attemptNotFound: "Попытка не найдена или не принадлежит вам",
       default: "Непредвиденная ошибка 404 Жатва",
+      userNotFound: "Пользователь не найден",
    },
    unhandled: "Unhandled Axios Error",
 };
@@ -100,6 +102,8 @@ export function harvestNetworkErrorsHandler(error: unknown, customErrorMessages?
       }
       if (code === 404) {
          switch (message) {
+            case "USER_NOT_FOUND":
+               return customErrorMessages?._404?.userNotFound ?? defaultHarvestErrorMessages._404.userNotFound;
             case "ATTEMPT_NOT_FOUND":
                return customErrorMessages?._404?.attemptNotFound ?? defaultHarvestErrorMessages._404.attemptNotFound;
             default:

@@ -7,8 +7,9 @@ import { authMiddleWare } from "@/middleware/auth.middleware";
 const harvestRouter = Router();
 
 harvestRouter.post("/", ...asyncHandlerMap([authMiddleWare, harvestController.createAttempt]));
-harvestRouter.get("/", ...asyncHandlerMap([authMiddleWare, harvestController.getAttempts]));
-harvestRouter.get("/average", ...asyncHandlerMap([authMiddleWare, harvestController.getAverageAttempts]));
+harvestRouter.get("/", ...asyncHandlerMap([authMiddleWare, harvestController.getUserAttemptsView]));
+harvestRouter.get("/average", ...asyncHandlerMap([authMiddleWare, harvestController.getCurrentUserAverageAttempts]));
+harvestRouter.get("/average/:nickname", ...asyncHandlerMap([authMiddleWare, harvestController.getOtherUserAverageAttempts]));
 harvestRouter.get("/attempt/:id", ...asyncHandlerMap([authMiddleWare, harvestController.getSingleAttempt]));
 harvestRouter.put("/", ...asyncHandlerMap([authMiddleWare, harvestController.updateAttempt]));
 harvestRouter.delete("/:id", ...asyncHandlerMap([authMiddleWare, harvestController.deleteAttempt]));

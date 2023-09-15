@@ -6,7 +6,10 @@ import { type IHarvestAttemptResponse } from "@@@/types/api/harvest/IHarvestAtte
 import { type IHarvestAttemptListResponse } from "@@@/types/api/harvest/IHarvestAttemptListResponse";
 import { type IDeleteResponse } from "@@@/types/api/IDeleteResponse";
 import httpService from "./http.service";
-import { type IHarvestAverageAttemptsResponse } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
+import {
+   type IHarvestUserAverageAttemptsResponse,
+   type IHarvestAverageAttemptsResponse,
+} from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
 
 const harvestEndPoint = "harvest";
 
@@ -28,9 +31,15 @@ export const harvestService = {
       });
       return data.attemptsInfo;
    },
-   getAverageAttempts: async () => {
+   getCurrentUserAverageAttempts: async () => {
       const { data } = await httpService.get<IHarvestAverageAttemptsResponse>(`${harvestEndPoint}/average`);
       return data.average;
+   },
+   getOtherUserAverageAttempts: async (nickname: string) => {
+      const { data } = await httpService.get<IHarvestUserAverageAttemptsResponse>(
+         `${harvestEndPoint}/average/${nickname}`
+      );
+      return data.user;
    },
    getSingleAttempt: async (attemptId: number) => {
       const { data } = await httpService.get<IHarvestAttemptResponse>(`${harvestEndPoint}/attempt/${attemptId}`);

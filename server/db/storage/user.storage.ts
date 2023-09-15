@@ -23,11 +23,6 @@ export class UserStorageDB implements IUserStorage {
       return users.rows;
    }
 
-   async getOneUserById(userId: number): Promise<IUserDataWithPassword> {
-      const user = await db.query<IUserDataWithPassword>(GET_SINGLE_USER_BY_ID_ATTEMPT_QUERY, [userId]);
-      return user.rows[0];
-   }
-
    async getOneUserByNickname(nickname: string): Promise<IUserDataWithPassword> {
       const user = await db.query<IUserDataWithPassword>(GET_SINGLE_USER_BY_NICKNAME_ATTEMPT_QUERY, [nickname]);
       return user.rows[0];
