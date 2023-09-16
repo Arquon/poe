@@ -8,6 +8,7 @@ export interface IHarvestAttempt {
    userId: number;
    invitations: number;
    note: string;
+   createdAt: string;
 }
 export interface IHarvestAttemptView {
    total: IHarvestMapLifeForceCount;

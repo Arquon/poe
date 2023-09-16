@@ -59,6 +59,7 @@ export const HarvestForm: FC<HarvestFormProps> = ({ onSubmit, buttonText, readOn
             errors={errors.maps}
             readonly={readOnly}
             placeHolderMaps={placeHolderAttempt?.maps}
+            createdAt={attempt.createdAt}
          />
 
          <HarvestPricesFieldsBlock

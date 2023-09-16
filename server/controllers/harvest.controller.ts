@@ -3,7 +3,12 @@ import { IHarvestAttempt } from "@@@/types/harvest/IHarvestAttempt";
 import { IHarvestAttemptResponse } from "@@@/types/api/harvest/IHarvestAttemptResponse";
 import { IHarvestAttemptListResponse } from "@@@/types/api/harvest/IHarvestAttemptListResponse";
 import { IHarvestAverageAttemptsResponse, IHarvestUserAverageAttemptsResponse } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
-import { IHarvestAttemptNew, IHarvestAttemptCreateRequest, IHarvestAttemptUpdateRequest } from "@@@/types/api/harvest/IHarvestAttemptRequest";
+import {
+   IHarvestAttemptCreate,
+   IHarvestAttemptCreateRequest,
+   IHarvestAttemptUpdate,
+   IHarvestAttemptUpdateRequest,
+} from "@@@/types/api/harvest/IHarvestAttemptRequest";
 import { HarvestStorageDb } from "@/db/storage/harvest.storage";
 import { DatabaseError } from "pg";
 import createError from "http-errors";
@@ -42,7 +47,7 @@ class HarvestController implements IHarvestController {
       if (!req.user) throw createHttpError(500, "user id lost: harvest create");
 
       try {
-         const attemptToAdd: IHarvestAttemptNew = {
+         const attemptToAdd: IHarvestAttemptCreate = {
             ...req.body,
             userId: req.user.id,
          };
@@ -109,7 +114,7 @@ class HarvestController implements IHarvestController {
    async updateAttempt(req: Request<{}, {}, IHarvestAttemptUpdateRequest>, res: Response<IHarvestAttemptResponse>): Promise<void> {
       if (!req.user) throw createHttpError(500, "user id lost: harvest update");
 
-      const attemptToUpdate: IHarvestAttempt = {
+      const attemptToUpdate: IHarvestAttemptUpdate = {
          ...req.body,
          userId: req.user.id,
       };

@@ -2,6 +2,7 @@ import { type IHarvestMapValues, type IHarvestMapValuesWithoutId } from "@@@/typ
 import React, { type FC } from "react";
 import { HarvestMapFields } from "./HarvestMapFields";
 import { type THarvestMapFormErrors } from "@/form/harvest.validator";
+import { getLocaleDateTimeString } from "@/utils/functions/functions";
 
 interface HarvestMapsFieldsBlockProps {
    setMapValues: (map: Partial<IHarvestMapValues>, order: number) => void;
@@ -9,6 +10,7 @@ interface HarvestMapsFieldsBlockProps {
    placeHolderMaps?: IHarvestMapValuesWithoutId[];
    errors: THarvestMapFormErrors[];
    readonly?: boolean;
+   createdAt?: string;
 }
 
 export const HarvestMapsFieldsBlock: FC<HarvestMapsFieldsBlockProps> = ({
@@ -17,6 +19,7 @@ export const HarvestMapsFieldsBlock: FC<HarvestMapsFieldsBlockProps> = ({
    maps,
    errors,
    readonly,
+   createdAt,
 }) => {
    const [firstMap, secondMap, thirdMap, fourthMap] = [...maps].sort((a, b) => a.order - b.order);
    const [phFirstMap, phSecondMap, phThirdMap, phFourthMap] = placeHolderMaps
@@ -30,7 +33,9 @@ export const HarvestMapsFieldsBlock: FC<HarvestMapsFieldsBlockProps> = ({
    return (
       <>
          <div className="row mb-3">
-            <div className="col-2"></div>
+            <div className="col-2">
+               <span className="fs-6 fw-bolder text-secondary">{getLocaleDateTimeString(createdAt)}</span>
+            </div>
             <div className="row col-10">
                <div className="col-3 text-center">Желтая жижа</div>
                <div className="col-3 text-center">Синяя жижа</div>

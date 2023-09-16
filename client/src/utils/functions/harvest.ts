@@ -4,6 +4,7 @@ import { type IHarvestAttemptView } from "@@@/types/harvest/IHarvestAttempt";
 import { round } from "./functions";
 import { type Nullable } from "@/types/default";
 import { type IHarvestSingleAttemptView } from "@@@/types/harvest/IHarvestSingleAttemptView";
+import { type IHarvestAttemptForm } from "@/form/harvest.form";
 
 interface IHarvestProfit {
    profit: number;
@@ -31,7 +32,9 @@ function calcProfit(
    return { profit, profitWithInvitations };
 }
 
-export function getProfit(attempt: IHarvestAttemptView | IHarvestSingleAttemptView): Nullable<IHarvestProfit> {
+export function getProfit(
+   attempt: IHarvestAttemptView | IHarvestSingleAttemptView | IHarvestAttemptForm
+): Nullable<IHarvestProfit> {
    if ("total" in attempt) {
       return calcProfit(attempt.total, attempt.invitations, attempt.prices);
    }
@@ -39,7 +42,9 @@ export function getProfit(attempt: IHarvestAttemptView | IHarvestSingleAttemptVi
    return calcProfit(attempt.maps[3].result, attempt.invitations, attempt.prices);
 }
 
-export function getProfitString(attempt: IHarvestAttemptView | IHarvestSingleAttemptView): Nullable<string> {
+export function getProfitString(
+   attempt: IHarvestAttemptView | IHarvestSingleAttemptView | IHarvestAttemptForm
+): Nullable<string> {
    let profitString = "";
    const profitObject = getProfit(attempt);
    if (!profitObject) return null;

@@ -10,12 +10,12 @@ interface HarvestViewProps {
 }
 
 export const HarvestView: FC<HarvestViewProps> = ({ attempt }) => {
-   const { maps, invitations, prices, note } = attempt;
+   const { maps, invitations, prices, note, createdAt } = attempt;
    const profit = getProfitString(attempt) ?? undefined;
 
    return (
       <div>
-         <HarvestMapsViewBlock maps={maps} />
+         <HarvestMapsViewBlock maps={maps} createdAt={createdAt} />
          <HarvestPricesViewBlock invitations={invitations} prices={prices} profit={profit} />
          {note && <TextView value={note} label="Примечание" />}
       </div>

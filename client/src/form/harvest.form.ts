@@ -9,10 +9,12 @@ import { v4 as uuidv4 } from "uuid";
 export interface IHarvestAttemptFormCreate extends IHarvestAttemptCreateRequest {
    id?: never;
    userId?: never;
+   createdAt?: never;
 }
 export interface IHarvestAttemptFormUpdate extends IHarvestAttemptUpdateRequest {
    userId: number;
    id: number;
+   createdAt: string;
 }
 
 export type IHarvestAttemptForm = IHarvestAttemptFormCreate | IHarvestAttemptFormUpdate;

@@ -3,7 +3,7 @@ import { IHarvestAttemptView, IHarvestAttempt, IHarvestAttemptViewInfo } from "@
 
 import db from "@/db";
 import { IHarvestPrices } from "@@@/types/harvest/IHarvestPrices";
-import { IHarvestAttemptNew } from "@@@/types/api/harvest/IHarvestAttemptRequest";
+import { IHarvestAttemptCreate, IHarvestAttemptUpdate } from "@@@/types/api/harvest/IHarvestAttemptRequest";
 import { Nullable } from "@/types/default";
 import { IHarvestMapValues } from "@@@/types/harvest/IHarvestMapValues";
 
@@ -27,6 +27,7 @@ interface IHarvestAttemptDB {
    prices: IHarvestPrices;
    invitations: number;
    note: string;
+   created_at: string;
 }
 
 interface IHarvestAttemptDBWithNickname extends IHarvestAttemptDB {
@@ -40,6 +41,7 @@ const constructAttempt = (attempt: IHarvestAttemptDB): IHarvestAttempt => ({
    prices: attempt.prices,
    invitations: attempt.invitations,
    note: attempt.note,
+   createdAt: attempt.created_at,
 });
 
 export class HarvestStorageDb implements IHarvestStorage {
@@ -48,7 +50,7 @@ export class HarvestStorageDb implements IHarvestStorage {
       return exists;
    }
 
-   async createAttempt(attempt: IHarvestAttemptNew): Promise<IHarvestAttempt> {
+   async createAttempt(attempt: IHarvestAttemptCreate): Promise<IHarvestAttempt> {
       const { maps, prices, userId, invitations, note } = attempt;
       const newAttempt = (await db.query<IHarvestAttemptDB>(INSERT_INTO_HARVEST_QUERY, [userId, maps, prices, invitations, note])).rows[0];
       return constructAttempt(newAttempt);
@@ -78,7 +80,7 @@ export class HarvestStorageDb implements IHarvestStorage {
       return attempts;
    }
 
-   async updateAttempt(attempt: IHarvestAttempt): Promise<Nullable<IHarvestAttempt>> {
+   async updateAttempt(attempt: IHarvestAttemptUpdate): Promise<Nullable<IHarvestAttempt>> {
       const { id, maps, prices, userId, invitations, note } = attempt;
       if (!this.checkIfUserHaveAttempt(userId, id)) return null;
 

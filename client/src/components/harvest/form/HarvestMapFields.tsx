@@ -64,6 +64,17 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
       return value;
    };
 
+   const mapQuantityInsertHandler = (value: string): string => {
+      const test = value.split("Количество предметов: +");
+      if (test.length > 1) {
+         if (value.match("Неопознано")) return "";
+         const parsedValue = test[1].split("%")[0].replaceAll(String.fromCharCode(160), "");
+         return parsedValue;
+      }
+
+      return value;
+   };
+
    return (
       <div className="row harvest-map">
          <div className="col-2">{heading}</div>
@@ -113,7 +124,7 @@ export const HarvestMapFields: FC<HarvestMapFieldsProps> = ({
                   value={quantity || ""}
                   error={quantityError}
                   readOnly={readOnly}
-                  insertHandler={lifeForceInsertHandler}
+                  insertHandler={mapQuantityInsertHandler}
                />
             </div>
          </div>

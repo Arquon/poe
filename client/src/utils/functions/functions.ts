@@ -57,3 +57,11 @@ export function round(val: number | string, res: number = 2): number {
 export function gap(value: string | number, unit?: string): string {
    return (+value).toLocaleString("ru-RU").replace(",", ".") + (unit ? `\u00A0${unit}` : "");
 }
+
+export function getLocaleDateTimeString(timestamp?: string): string {
+   if (!timestamp) return "";
+   const date = new Date(timestamp);
+   const dateString = date.toLocaleDateString("ru");
+   const timeString = date.toLocaleTimeString("ru").slice(0, 5);
+   return `${dateString} ${timeString}`;
+}
