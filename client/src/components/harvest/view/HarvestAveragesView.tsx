@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import React, { useState, type FC, type PropsWithChildren, type FormEvent } from "react";
 import { HarvestView } from "./HarvestView";
 import { type Nullable } from "@/types/default";
-import { type IHarvestAverageAttempt } from "@@@/types/harvest/IHarvestSingleAttemptView";
+import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
 import { getClassNameFromArray, toastError, toastSuccess } from "@/utils/functions/functions";
 import { Button } from "@/components/ui/Button";
 import { ModalProvider } from "@/providers/ModalProvider";
@@ -29,11 +29,10 @@ export const HarvestAveragesView: FC<HarvestAveragesViewProps> = ({}) => {
    const [otherUser, setOtherUser] = useState("");
    const [isLoadingOtherUser, setIsLoadingOtherUser] = useState(false);
 
-   const getCurrentAverage = (): Nullable<IHarvestAverageAttempt> | undefined => {
-      console.log({ averageTab });
-      if (averageTab === "user") return averageAttempts?.currentUser.averageAttempt;
-      if (averageTab === "global") return averageAttempts?.global.averageAttempt;
-      if (averageTab) return averageAttempts?.otherUsers[averageTab].averageAttempt;
+   const getCurrentAverage = (): Nullable<IHarvestAverageAttemptsObj> | undefined => {
+      if (averageTab === "user") return averageAttempts?.currentUser;
+      if (averageTab === "global") return averageAttempts?.global;
+      if (averageTab) return averageAttempts?.otherUsers[averageTab];
       return null;
    };
 
@@ -70,9 +69,7 @@ export const HarvestAveragesView: FC<HarvestAveragesViewProps> = ({}) => {
       <div>
          <h3 className="mb-3 d-flex justify-content-between align-items-end">
             <span>Средние значения за воспоминание</span>
-            {currentAverage?.attemptsCount && (
-               <span className="fs-5">Всего воспоминаний: {currentAverage?.attemptsCount}</span>
-            )}
+            {currentAverage?.total && <span className="fs-5">Всего воспоминаний: {currentAverage?.total}</span>}
          </h3>
          <ul className="nav  nav-pills d-flex justify-content-center mb-3">
             {averageAttempts?.currentUser && (
@@ -110,7 +107,11 @@ export const HarvestAveragesView: FC<HarvestAveragesViewProps> = ({}) => {
                </>
             )}
          </ul>
-         {currentAverage ? <HarvestView attempt={{ ...currentAverage, note: "" }} /> : <p>Нет средних значений</p>}
+         {currentAverage?.averageAttempt ? (
+            <HarvestView attempt={{ ...currentAverage.averageAttempt, note: "" }} />
+         ) : (
+            <p>Нет средних значений</p>
+         )}
          <Button className="btn-success" onClick={openOtherUserModal}>
             Добавить пользователя
          </Button>

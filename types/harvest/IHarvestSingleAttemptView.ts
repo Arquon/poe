@@ -7,7 +7,7 @@ export type IHarvestSingleAttemptView = Omit<IHarvestAttempt, "id" | "userId" | 
    createdAt?: string;
 };
 
-export type IHarvestAverageAttempt = Omit<IHarvestSingleAttemptView, "note" | "createdAt"> & { attemptsCount: number };
+export type IHarvestAverageAttempt = Omit<IHarvestSingleAttemptView, "note" | "createdAt">;
 
 export interface IHarvestAverageAttemptsObj {
    total: number;
