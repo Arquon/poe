@@ -1,6 +1,8 @@
 import { IHarvestAttemptCreate, IHarvestAttemptUpdate } from "@@@/types/api/harvest/IHarvestAttemptRequest";
-import { IHarvestAttempt, IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
+import { IHarvestAttempt, IHarvestAttemptView } from "@@@/types/harvest/IHarvestAttempt";
 import { Nullable } from "@/types/default";
+
+import { IArrayWithTotalCount } from "@@@/types/utils/utils";
 
 export interface IGetAttemptsInfo {
    page: number;
@@ -9,10 +11,10 @@ export interface IGetAttemptsInfo {
 
 export interface IHarvestStorage {
    createAttempt(attempt: IHarvestAttemptCreate): Promise<IHarvestAttempt>;
-   getUserAttemptsView(userId: number, info: IGetAttemptsInfo): Promise<IHarvestAttemptViewInfo>;
+   getUserAttemptsView(userId: number, info: IGetAttemptsInfo): Promise<IArrayWithTotalCount<IHarvestAttemptView>>;
+   getUserAttempts(userId: number): Promise<IArrayWithTotalCount<IHarvestAttempt>>;
+   getAllAttempts(): Promise<IArrayWithTotalCount<IHarvestAttempt>>;
    getSingleAttempt(attemptId: number): Promise<Nullable<IHarvestAttempt>>;
-   getAllAttempts(): Promise<IHarvestAttempt[]>;
-   getUserAllAttempts(nickname: string): Promise<Nullable<IHarvestAttempt[]>>;
    updateAttempt(attempt: Nullable<IHarvestAttemptUpdate>): Promise<Nullable<IHarvestAttempt>>;
    deleteAttempt(userId: number, attemptId: number): Promise<Nullable<number>>;
 }

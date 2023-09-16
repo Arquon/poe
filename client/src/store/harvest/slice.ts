@@ -13,10 +13,10 @@ import { getAttemptViewFromAttempt } from "@/utils/parsers";
 import { HarvestFormService, type IHarvestAttemptFormCreate, type IHarvestAttemptForm } from "@/form/harvest.form";
 import { HarvestValidatorService, type THarvestAttemptFormErrors } from "@/form/harvest.validator";
 import { type Nullable } from "@/types/default";
-import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
 import { type IOtherUsersAverageAttempt } from "@/types/harvest/IOtherUserAverageAttempt";
+import { type IHarvestUserAndGlobalAverageAttempts } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
 
-interface IHarvestAverageAttemptsSlice extends IHarvestAverageAttemptsObj {
+interface IHarvestAverageAttemptsSlice extends IHarvestUserAndGlobalAverageAttempts {
    otherUsers: IOtherUsersAverageAttempt;
 }
 
@@ -77,7 +77,7 @@ const harvestSlice = createSlice({
             state.attemptErrors = HarvestValidatorService.getAttemptErrors(currentAttempt);
          })
          .addCase(getAttempts.fulfilled, (state, action) => {
-            state.attempts = action.payload.attempts;
+            state.attempts = action.payload.items;
             state.total = action.payload.total;
          })
          .addCase(getSingleAttempt.fulfilled, (state, action) => {
@@ -92,7 +92,7 @@ const harvestSlice = createSlice({
          })
          .addCase(deleteAttempt.fulfilled, (state, action) => {})
          .addCase(getCurrentUserAverageAttempts.fulfilled, (state, action) => {
-            state.averageAttempts = { ...action.payload, otherUsers: {} };
+            state.averageAttempts = { ...action.payload, otherUsers: state.averageAttempts?.otherUsers ?? {} };
          })
          .addCase(getOtherUserAverageAttempt.fulfilled, (state, action) => {
             if (state.averageAttempts) {

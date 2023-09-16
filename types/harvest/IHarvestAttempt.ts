@@ -16,8 +16,3 @@ export interface IHarvestAttemptView {
    invitations: number;
    id: number;
 }
-
-export interface IHarvestAttemptViewInfo {
-   attempts: IHarvestAttemptView[];
-   total: number;
-}

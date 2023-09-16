@@ -4,11 +4,12 @@ import {
    type IHarvestAttemptCreateRequest as IHarvestAttemptNewForm,
    type IHarvestAttemptUpdateRequest as IHarvestAttemptUpdateForm,
 } from "@@@/types/api/harvest/IHarvestAttemptRequest";
-import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
-import { type IHarvestAttempt, type IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
+import { type IHarvestAttemptView, type IHarvestAttempt } from "@@@/types/harvest/IHarvestAttempt";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { type IOtherUsersAverageAttempt } from "@/types/harvest/IOtherUserAverageAttempt";
 import { type Nullable } from "@/types/default";
+import { type IHarvestUserAndGlobalAverageAttempts } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
+import { type IArrayWithTotalCount } from "@@@/types/utils/utils";
 
 const addAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptNewForm, { rejectValue: string }>(
    "harvest/add",
@@ -23,7 +24,7 @@ const addAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptNewForm, { r
    }
 );
 
-const getAttempts = createAsyncThunk<IHarvestAttemptViewInfo, number, { rejectValue: string }>(
+const getAttempts = createAsyncThunk<IArrayWithTotalCount<IHarvestAttemptView>, number, { rejectValue: string }>(
    "harvest/getAll",
    async function (page, { rejectWithValue }) {
       try {
@@ -51,18 +52,19 @@ const getSingleAttempt = createAsyncThunk<IHarvestAttempt, number, { rejectValue
    }
 );
 
-const getCurrentUserAverageAttempts = createAsyncThunk<IHarvestAverageAttemptsObj, undefined, { rejectValue: string }>(
-   "harvest/getCurrentUserAverages",
-   async function (_, { rejectWithValue }) {
-      try {
-         const attempts = await harvestService.getCurrentUserAverageAttempts();
-         return attempts;
-      } catch (error) {
-         const parsedError = harvestNetworkErrorsHandler(error);
-         return rejectWithValue(parsedError);
-      }
+const getCurrentUserAverageAttempts = createAsyncThunk<
+   IHarvestUserAndGlobalAverageAttempts,
+   undefined,
+   { rejectValue: string }
+>("harvest/getCurrentUserAverages", async function (_, { rejectWithValue }) {
+   try {
+      const defaultAverageAttempts = await harvestService.getCurrentUserAverageAttempts();
+      return defaultAverageAttempts;
+   } catch (error) {
+      const parsedError = harvestNetworkErrorsHandler(error);
+      return rejectWithValue(parsedError);
    }
-);
+});
 
 const getOtherUserAverageAttempt = createAsyncThunk<
    Nullable<IOtherUsersAverageAttempt>,

@@ -8,7 +8,7 @@ import { type IDeleteResponse } from "@@@/types/api/IDeleteResponse";
 import httpService from "./http.service";
 import {
    type IHarvestUserAverageAttemptsResponse,
-   type IHarvestAverageAttemptsResponse,
+   type IHarvestUserAndGlobalAverageAttemptsResponse,
 } from "@@@/types/api/harvest/IHarvestAverageAttemptsResponse";
 
 const harvestEndPoint = "harvest";
@@ -32,8 +32,10 @@ export const harvestService = {
       return data.attemptsInfo;
    },
    getCurrentUserAverageAttempts: async () => {
-      const { data } = await httpService.get<IHarvestAverageAttemptsResponse>(`${harvestEndPoint}/average`);
-      return data.average;
+      const { data } = await httpService.get<IHarvestUserAndGlobalAverageAttemptsResponse>(
+         `${harvestEndPoint}/average`
+      );
+      return data.defaultAverage;
    },
    getOtherUserAverageAttempts: async (nickname: string) => {
       const { data } = await httpService.get<IHarvestUserAverageAttemptsResponse>(

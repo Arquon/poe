@@ -8,7 +8,7 @@ import { IUserResponse } from "@@@/types/api/user/IUserResponse";
 import { IDeleteResponse } from "@@@/types/api/IDeleteResponse";
 
 import { IUserStorage } from "@/types/storage/IUserStorage";
-import { UserStorageDB } from "@/db/storage/user.storage";
+import { userStorageDb } from "@/db/storage/user.storage";
 
 import { EDatabaseErrorCodes } from "@/types/errors/EDatabaseErrorCodes";
 import { TokenService } from "@/services/tokenService";
@@ -62,7 +62,7 @@ class UserController implements IUserController {
       const { nickname, password } = req.body;
       const userFromDatabase = await this.userStorage.getOneUserByNickname(nickname);
 
-      if (!userFromDatabase.nickname) throw createHttpError(400, "USER_NOT_FOUND");
+      if (!userFromDatabase.id) throw createHttpError(400, "USER_NOT_FOUND");
 
       const isPasswordValid = bcrypt.compareSync(password, userFromDatabase.password);
       if (!isPasswordValid) throw createHttpError(400, "INVALID_PASSWORD");
@@ -106,6 +106,6 @@ class UserController implements IUserController {
    }
 }
 
-const userController = new UserController(new UserStorageDB());
+const userController = new UserController(userStorageDb);
 
 export default userController;

@@ -1,9 +1,14 @@
-import { IHarvestAverageAttempt, type IHarvestAverageAttemptsObj } from "../../harvest/IHarvestSingleAttemptView";
+import { type IHarvestAverageAttemptsObj } from "../../harvest/IHarvestSingleAttemptView";
 
-export interface IHarvestAverageAttemptsResponse {
-   average: IHarvestAverageAttemptsObj;
+export interface IHarvestUserAndGlobalAverageAttempts {
+   currentUser: IHarvestAverageAttemptsObj;
+   global: IHarvestAverageAttemptsObj;
+}
+
+export interface IHarvestUserAndGlobalAverageAttemptsResponse {
+   defaultAverage: IHarvestUserAndGlobalAverageAttempts;
 }
 
 export interface IHarvestUserAverageAttemptsResponse {
-   user: IHarvestAverageAttempt | null;
+   user: IHarvestAverageAttemptsObj;
 }

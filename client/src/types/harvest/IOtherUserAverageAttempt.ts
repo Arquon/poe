@@ -1,3 +1,3 @@
-import { type IHarvestAverageAttempt } from "@@@/types/harvest/IHarvestSingleAttemptView";
+import { type IHarvestAverageAttemptsObj } from "@@@/types/harvest/IHarvestSingleAttemptView";
 
-export type IOtherUsersAverageAttempt = Record<string, IHarvestAverageAttempt>;
+export type IOtherUsersAverageAttempt = Record<string, IHarvestAverageAttemptsObj>;

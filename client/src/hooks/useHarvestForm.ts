@@ -27,7 +27,7 @@ export function useHarvestForm(): UseHarvestFormReturnType {
       dispatch(harvestSyncActions.validateAttempt());
    }, [attempt]);
 
-   const placeHolderAttempt = averageAttempts?.currentUser ?? averageAttempts?.global;
+   const placeHolderAttempt = averageAttempts?.currentUser.averageAttempt ?? averageAttempts?.global.averageAttempt;
 
    return { attempt, errors, placeHolderAttempt, setAttemptValues };
 }

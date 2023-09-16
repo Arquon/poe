@@ -1,5 +1,6 @@
-import { IHarvestAttemptViewInfo } from "@@@/types/harvest/IHarvestAttempt";
+import { IHarvestAttemptView } from "@@@/types/harvest/IHarvestAttempt";
+import { IArrayWithTotalCount } from "@@@/types/utils/utils";
 
 export interface IHarvestAttemptListResponse {
-   attemptsInfo: IHarvestAttemptViewInfo;
+   attemptsInfo: IArrayWithTotalCount<IHarvestAttemptView>;
 }

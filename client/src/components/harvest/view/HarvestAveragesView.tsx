@@ -31,9 +31,9 @@ export const HarvestAveragesView: FC<HarvestAveragesViewProps> = ({}) => {
 
    const getCurrentAverage = (): Nullable<IHarvestAverageAttempt> | undefined => {
       console.log({ averageTab });
-      if (averageTab === "user") return averageAttempts?.currentUser;
-      if (averageTab === "global") return averageAttempts?.global;
-      if (averageTab) return averageAttempts?.otherUsers[averageTab];
+      if (averageTab === "user") return averageAttempts?.currentUser.averageAttempt;
+      if (averageTab === "global") return averageAttempts?.global.averageAttempt;
+      if (averageTab) return averageAttempts?.otherUsers[averageTab].averageAttempt;
       return null;
    };
 

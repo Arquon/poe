@@ -6,7 +6,6 @@ import db from "@/db";
 
 const INSERT_INTO_USER_QUERY = "SELECT * FROM add_user($1, $2)";
 const GET_USER_ATTEMPTS_QUERY = "SELECT id, nickname FROM get_users()";
-const GET_SINGLE_USER_BY_ID_ATTEMPT_QUERY = "SELECT * FROM get_users() WHERE id = $1";
 const GET_SINGLE_USER_BY_NICKNAME_ATTEMPT_QUERY = "SELECT * FROM get_user_by_nickname($1)";
 const UPDATE_USER_ATTEMPT_QUERY = "SELECT * FROM update_user($1, $2, $3)";
 const DELETE_USER_ATTEMPT_QUERY = "SELECT * FROM delete_user($1)";
@@ -39,3 +38,5 @@ export class UserStorageDB implements IUserStorage {
       return user.rows[0]?.id;
    }
 }
+
+export const userStorageDb = new UserStorageDB();
