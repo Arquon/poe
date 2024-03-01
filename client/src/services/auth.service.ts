@@ -19,8 +19,8 @@ export const authService = {
       });
       return data.user;
    },
-   getCurrentUserData: async () => {
-      const { data } = await httpService.get<IUserResponse>(usersEndPoint);
+   getCurrentUserData: async (signal?: AbortSignal) => {
+      const { data } = await httpService.get<IUserResponse>(usersEndPoint, { signal });
       return data.user;
    },
    logout: async () => {

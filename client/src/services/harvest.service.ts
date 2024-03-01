@@ -22,18 +22,20 @@ export const harvestService = {
       });
       return data.attempt;
    },
-   getUserAttempts: async (page: number) => {
+   getUserAttempts: async (page: number, signal?: AbortSignal) => {
       const { data } = await httpService.get<IHarvestAttemptListResponse>(`${harvestEndPoint}`, {
          params: {
             count: ATTEMPTS_IN_PAGES,
             page,
          },
+         signal,
       });
       return data.attemptsInfo;
    },
-   getCurrentUserAverageAttempts: async () => {
+   getCurrentUserAverageAttempts: async (signal?: AbortSignal) => {
       const { data } = await httpService.get<IHarvestUserAndGlobalAverageAttemptsResponse>(
-         `${harvestEndPoint}/average`
+         `${harvestEndPoint}/average`,
+         { signal }
       );
       return data.defaultAverage;
    },
@@ -43,8 +45,10 @@ export const harvestService = {
       );
       return data.user;
    },
-   getSingleAttempt: async (attemptId: number) => {
-      const { data } = await httpService.get<IHarvestAttemptResponse>(`${harvestEndPoint}/attempt/${attemptId}`);
+   getSingleAttempt: async (attemptId: number, signal?: AbortSignal) => {
+      const { data } = await httpService.get<IHarvestAttemptResponse>(`${harvestEndPoint}/attempt/${attemptId}`, {
+         signal,
+      });
       return data.attempt;
    },
    updateAttempt: async (attempt: IHarvestAttemptUpdateRequest) => {

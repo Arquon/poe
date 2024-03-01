@@ -24,41 +24,43 @@ const addAttempt = createAsyncThunk<IHarvestAttempt, IHarvestAttemptNewForm, { r
    }
 );
 
-const getAttempts = createAsyncThunk<IArrayWithTotalCount<IHarvestAttemptView>, number, { rejectValue: string }>(
-   "harvest/getAll",
-   async function (page, { rejectWithValue }) {
-      try {
-         const attempts = await harvestService.getUserAttempts(page);
-         return attempts;
-      } catch (error) {
-         const parsedError = harvestNetworkErrorsHandler(error);
-         return rejectWithValue(parsedError);
-      }
+const getAttempts = createAsyncThunk<
+   IArrayWithTotalCount<IHarvestAttemptView>,
+   { page: number; signal?: AbortSignal },
+   { rejectValue: string }
+>("harvest/getAll", async function ({ page, signal }, { rejectWithValue }) {
+   try {
+      const attempts = await harvestService.getUserAttempts(page, signal);
+      return attempts;
+   } catch (error) {
+      const parsedError = harvestNetworkErrorsHandler(error);
+      return rejectWithValue(parsedError);
    }
-);
+});
 
-const getSingleAttempt = createAsyncThunk<IHarvestAttempt, number, { rejectValue: string }>(
-   "harvest/getSingle",
-   async function (attemptId, { rejectWithValue }) {
-      try {
-         const attempt = await harvestService.getSingleAttempt(attemptId);
-         return attempt;
-      } catch (error) {
-         const parsedError = harvestNetworkErrorsHandler(error, {
-            _404: { attemptNotFound: "Попытка не найдена" },
-         });
-         return rejectWithValue(parsedError);
-      }
+const getSingleAttempt = createAsyncThunk<
+   IHarvestAttempt,
+   { attemptId: number; signal?: AbortSignal },
+   { rejectValue: string }
+>("harvest/getSingle", async function ({ attemptId, signal }, { rejectWithValue }) {
+   try {
+      const attempt = await harvestService.getSingleAttempt(attemptId, signal);
+      return attempt;
+   } catch (error) {
+      const parsedError = harvestNetworkErrorsHandler(error, {
+         _404: { attemptNotFound: "Попытка не найдена" },
+      });
+      return rejectWithValue(parsedError);
    }
-);
+});
 
 const getCurrentUserAverageAttempts = createAsyncThunk<
    IHarvestUserAndGlobalAverageAttempts,
-   undefined,
+   { signal?: AbortSignal },
    { rejectValue: string }
->("harvest/getCurrentUserAverages", async function (_, { rejectWithValue }) {
+>("harvest/getCurrentUserAverages", async function ({ signal }, { rejectWithValue }) {
    try {
-      const defaultAverageAttempts = await harvestService.getCurrentUserAverageAttempts();
+      const defaultAverageAttempts = await harvestService.getCurrentUserAverageAttempts(signal);
       return defaultAverageAttempts;
    } catch (error) {
       const parsedError = harvestNetworkErrorsHandler(error);

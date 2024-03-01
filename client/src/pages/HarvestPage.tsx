@@ -1,4 +1,4 @@
-import React, { useState, type FC, useEffect } from "react";
+import React, { useState, type FC } from "react";
 import { HarvestForm } from "@/components/harvest/form/HarvestForm";
 import { HarvestTable } from "@/components/harvest/table/HarvestTable";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ import { Outlet, useLocation, useMatch, useSearchParams } from "react-router-dom
 import { toastError, toastSuccess } from "@/utils/functions/functions";
 import { ERoutes } from "@/router/router";
 import { HarvestAveragesView } from "@/components/harvest/view/HarvestAveragesView";
+import { useFetchAbortEffect } from "@/hooks/useFetchAbortEffect";
 
 interface HarvestPageProps {}
 
@@ -53,7 +54,7 @@ const HarvestPageComponent: FC<HarvestPageProps> = ({}) => {
       setIsLoadingAddAttempt(true);
       try {
          unwrapResult(await dispatch(harvestAsyncActions.addAttempt(data)));
-         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()));
+         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts({})));
          toastSuccess("Попытка добавлена");
          setIsModalFormShow(false);
       } finally {
@@ -61,10 +62,10 @@ const HarvestPageComponent: FC<HarvestPageProps> = ({}) => {
       }
    };
 
-   async function fetchHarvestAttempts(): Promise<void> {
+   async function fetchHarvestAttempts(signal?: AbortSignal): Promise<void> {
       try {
          setIsLoadingAttempts(true);
-         unwrapResult(await dispatch(harvestAsyncActions.getAttempts(+page)));
+         unwrapResult(await dispatch(harvestAsyncActions.getAttempts({ page: +page, signal })));
       } catch (error) {
          toastError(error);
       } finally {
@@ -72,21 +73,24 @@ const HarvestPageComponent: FC<HarvestPageProps> = ({}) => {
       }
    }
 
-   async function fetchHarvestAverageAttempts(): Promise<void> {
+   async function fetchHarvestAverageAttempts(signal?: AbortSignal): Promise<void> {
       try {
-         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()));
+         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts({ signal })));
       } catch (error) {
          console.log(error);
       }
    }
 
-   useEffect(() => {
-      fetchHarvestAverageAttempts();
+   useFetchAbortEffect((signal) => {
+      fetchHarvestAverageAttempts(signal);
    }, []);
 
-   useEffect(() => {
-      fetchHarvestAttempts();
-   }, [page]);
+   useFetchAbortEffect(
+      (signal) => {
+         fetchHarvestAttempts(signal);
+      },
+      [page]
+   );
 
    return (
       <>

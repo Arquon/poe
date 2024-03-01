@@ -3,6 +3,7 @@ import { HarvestView } from "@/components/harvest/view/HarvestView";
 import { ModalMedium } from "@/components/modals/ModalMedium";
 import { LightSpinner } from "@/components/ui/Spinner";
 import { type IHarvestAttemptForm } from "@/form/harvest.form";
+import { useFetchAbortEffect } from "@/hooks/useFetchAbortEffect";
 import { useNavigateSearch } from "@/hooks/useNavigateSearch";
 import { ModalProvider } from "@/providers/ModalProvider";
 import { ERoutes } from "@/router/router";
@@ -11,7 +12,7 @@ import { harvestSyncActions } from "@/store/harvest/slice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { toastError, toastSuccess } from "@/utils/functions/functions";
 import { unwrapResult } from "@reduxjs/toolkit";
-import React, { useState, type FC, useEffect } from "react";
+import React, { useState, type FC } from "react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 
 interface HarvestAttemptPageProps {}
@@ -30,10 +31,10 @@ const HarvestAttemptPageComponent: FC<HarvestAttemptPageProps> = () => {
    if (!id) return <Navigate to={ERoutes.harvest} />;
    if (!user) return <Navigate to={ERoutes.landing} />;
 
-   const fetchHarvestAttempt = async (): Promise<void> => {
+   const fetchHarvestAttempt = async (signal?: AbortSignal): Promise<void> => {
       try {
          setIsLoadingAttempt(true);
-         unwrapResult(await dispatch(harvestAsyncActions.getSingleAttempt(+id)));
+         unwrapResult(await dispatch(harvestAsyncActions.getSingleAttempt({ attemptId: +id, signal })));
       } catch (error) {
          toastError(error);
          navigate(ERoutes.harvest);
@@ -42,8 +43,8 @@ const HarvestAttemptPageComponent: FC<HarvestAttemptPageProps> = () => {
       }
    };
 
-   useEffect(() => {
-      fetchHarvestAttempt();
+   useFetchAbortEffect((signal) => {
+      fetchHarvestAttempt(signal);
    }, []);
 
    const updateAttempt = async (data: IHarvestAttemptForm): Promise<void> => {
@@ -51,7 +52,7 @@ const HarvestAttemptPageComponent: FC<HarvestAttemptPageProps> = () => {
       setIsLoadingUpdateAttempt(true);
       try {
          unwrapResult(await dispatch(harvestAsyncActions.updateAttempt({ ...data, id: currentAttempt.id })));
-         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts()));
+         unwrapResult(await dispatch(harvestAsyncActions.getCurrentUserAverageAttempts({})));
          toastSuccess("Попытка обновлена");
       } finally {
          setIsLoadingUpdateAttempt(false);

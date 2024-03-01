@@ -40,11 +40,11 @@ const register = createAsyncThunk<IUserData, IAuthData, { rejectValue: string | 
    }
 );
 
-const getCurrentUserData = createAsyncThunk<Nullable<IUserData>, undefined, { rejectValue: string }>(
+const getCurrentUserData = createAsyncThunk<Nullable<IUserData>, { signal?: AbortSignal }, { rejectValue: string }>(
    "user/getCurrentUserData",
-   async function (_, { rejectWithValue }) {
+   async function ({ signal }, { rejectWithValue }) {
       try {
-         const data = await authService.getCurrentUserData();
+         const data = await authService.getCurrentUserData(signal);
          return data;
       } catch (error) {
          const parsedError = userNetworkErrorsHandler(error);
